@@ -6,6 +6,7 @@ import io.jxcore.node.jxcore.JXcoreCallback;
 
 import java.util.ArrayList;
 import java.util.*;
+import android.net.Uri;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -35,14 +36,14 @@ public class JXMobile {
     public static boolean isBackgroundRunning(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
-	Log.e("jxcore",  "context.getPackageName()="+context.getPackageName());
+        Log.e("jxcore",  "context.getPackageName()="+context.getPackageName());
 		//
         for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
             if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
                 for (String activeProcess : processInfo.pkgList) {
                     if (activeProcess.equals(context.getPackageName()) && MainActivity.active) {
-			Log.e("jxcore",  "is running");
-			Log.e("jxcore",  "MainActivity.active="+MainActivity.active);
+                        Log.e("jxcore",  "is running");
+                        Log.e("jxcore",  "MainActivity.active="+MainActivity.active);
                         return true;
                     }
                 }
@@ -55,52 +56,54 @@ public class JXMobile {
 
     public static void Notify(Context context)
     {
-	Log.e("jxcore", "Notify!: ");
-	NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-	int icon = R.drawable.icon;//R.drawable.notification_icon;
-	long when = System.currentTimeMillis();
-	Notification notification = new Notification(icon, "", when);
+    	Log.e("jxcore", "Notify!: ");
+    	NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    	int icon = R.drawable.icon;//R.drawable.notification_icon;
+    	long when = System.currentTimeMillis();
+    	Notification notification = new Notification(icon, "", when);
 
-	notification.defaults |= Notification.DEFAULT_LIGHTS;
-        notification.defaults |= Notification.DEFAULT_SOUND;
+    	notification.defaults |= Notification.DEFAULT_LIGHTS;
+        //notification.defaults |= Notification.DEFAULT_SOUND;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.newmsg);
 
-	if (android.os.Build.VERSION.SDK_INT >=
-                android.os.Build.VERSION_CODES.KITKAT) {
+
+    	if (android.os.Build.VERSION.SDK_INT >=
+                    android.os.Build.VERSION_CODES.KITKAT) {
+                notification.ledARGB = Color.MAGENTA;
+            };
+
+    		//Context context = getApplicationContext();
+    		CharSequence contentTitle = "Mycely";
+    		CharSequence contentText = "Attention required!";
+    		Intent notificationIntent = new Intent(context, com.zeipt.mycely.MainActivity/*com.red_folder.phonegap.plugin.backgroundservice.BackgroundService*/.class);
+    		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+    		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+
+    		//int SERVER_DATA_RECEIVED = 1;
+    		notificationManager.notify(1, notification);
+    /*
+    	NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    	  @SuppressWarnings("deprecation")
+    	  Notification notification = new Notification(R.drawable.icon,
+    	    "Attention required", System.currentTimeMillis());
+
+    	   Intent notificationIntent = new Intent(this, MainActivity.class);
+    	  PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+    	    notificationIntent, 0);
+
+    	  // notification.setLatestEventInfo(MainActivity.this, "Mycely",
+    	    //"Attention required", pendingIntent);
+
+            notification.defaults |= Notification.DEFAULT_LIGHTS;
+            notification.defaults |= Notification.DEFAULT_SOUND;
+            notification.defaults |= Notification.DEFAULT_VIBRATE;
+            //notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notification.ledARGB = Color.MAGENTA;
-        };
 
-		//Context context = getApplicationContext();
-		CharSequence contentTitle = "Mycely";
-		CharSequence contentText = "Attention required!";
-		Intent notificationIntent = new Intent(context, com.zeipt.mycely.MainActivity/*com.red_folder.phonegap.plugin.backgroundservice.BackgroundService*/.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-
-		//int SERVER_DATA_RECEIVED = 1;
-		notificationManager.notify(1, notification);
-/*
-	NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-	  @SuppressWarnings("deprecation")
-	  Notification notification = new Notification(R.drawable.icon,
-	    "Attention required", System.currentTimeMillis());
-
-	   Intent notificationIntent = new Intent(this, MainActivity.class);
-	  PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-	    notificationIntent, 0);
-
-	  // notification.setLatestEventInfo(MainActivity.this, "Mycely",
-	    //"Attention required", pendingIntent);
-
-        notification.defaults |= Notification.DEFAULT_LIGHTS;
-        notification.defaults |= Notification.DEFAULT_SOUND;
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
-        //notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.ledARGB = Color.MAGENTA;
-
-	  notificationManager.notify(9999, notification);
-*/
+    	  notificationManager.notify(9999, notification);
+    */
     }
 
   public static String getStatusString(NetworkInfo[] netInfo, Boolean asJSON) {
@@ -184,7 +187,7 @@ public class JXMobile {
             mBluetoothAdapter.enable();
           else
             mBluetoothAdapter.disable();
-          
+
           jxcore.CallJSMethod(callbackId, "null");
         } else {
           jxcore.CallJSMethod(callbackId,
@@ -207,12 +210,12 @@ public class JXMobile {
 
         if (wifiManager != null) {
           wifiManager.setWifiEnabled(enabled);
-          
+
           if (enabled) {
             wifiManager.disconnect();
             wifiManager.reconnect();
           }
-          
+
           jxcore.CallJSMethod(callbackId, "null");
         } else {
           jxcore.CallJSMethod(callbackId,
@@ -227,7 +230,7 @@ public class JXMobile {
 
 
 
-    
+
 
 
     jxcore.RegisterMethod("Notify", new JXcoreCallback() {
@@ -238,9 +241,9 @@ public class JXMobile {
 	if(!isBackgroundRunning(jxcore.activity.getBaseContext())){
 			Notify(jxcore.activity.getBaseContext());
 	};
-        
+
       }
     });
-    
+
   }
 }

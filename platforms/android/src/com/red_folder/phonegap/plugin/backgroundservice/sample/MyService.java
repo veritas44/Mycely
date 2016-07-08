@@ -3,6 +3,7 @@ package com.red_folder.phonegap.plugin.backgroundservice.sample;
 import java.text.SimpleDateFormat;
 import java.lang.ref.WeakReference;
 import java.util.*;
+import android.net.Uri;
 
 
 import org.json.*;
@@ -133,9 +134,10 @@ public class MyService extends BackgroundService {
 		Notification notification = new Notification(icon, "", when);
 
 		notification.defaults |= Notification.DEFAULT_LIGHTS;
-        notification.defaults |= Notification.DEFAULT_SOUND;
+        //notification.defaults |= Notification.DEFAULT_SOUND;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.newmsg);
 
 		if (android.os.Build.VERSION.SDK_INT >=
                 android.os.Build.VERSION_CODES.KITKAT) {
