@@ -406,7 +406,7 @@ function add2Undelivered(data)
     var msg = JSON.stringify(data);
 	var d = JSON.parse(msg);
     var dest = d.destination;
-    undelivered.push({destination: dest, data: msg});
+    undelivered.push({destination: dest, data: msg, notified: false});
     /*
     dbd.insert({destination: dest, data: msg}, function(err, response) {
 		if(err){Send2UI("log",{msg:err,type:1});}
@@ -671,7 +671,8 @@ function ProcessCmdFromUI(cmd,data){
 											add2Undelivered({
 												destination: peers[i].destination,
 												cmd: data.q.cmd,
-												data: data.q.data
+												data: data.q.data,
+                                                notified: false
 											});
 											break;
 										};
@@ -1369,15 +1370,18 @@ function packetHandler(err, packet, chan, callback){
 			chan.end();
 		}
 		if(err.toString()=="timeout"){
-            
+
 			    for(i in peers){
 				    if(chan && chan.hashname && peers[i].destination==chan.hashname){
 					for(var j = 0; j < undelivered.length; j++) {
-					    //console.log("undelivered "+j+" "+undelivered[j].data.cmd+" "+undelivered[j].data.data+" ");
+					    //console.log("undelivered "+j+" "+undelivered[j].cmd+" "+undelivered[j].data);
 					    if(peers[i].destination==undelivered[j].destination)
 					    {
-					        //th_SendData2Dest(peers[i].destination,{cmd:undelivered[j].cmd, data:undelivered[j].data});
-                            if(!undelivered[j].notified) {
+                            //console.log("undelivered "+j+" "+undelivered[j].notified);
+
+					        if(!undelivered[j].notified) {
+                                //console.log("sending kickPeer");
+                                undelivered[j].notified = true;
                                 th_SendData2Dest(MainPushServer,{cmd:"kickPeer", data:{hn:chan.hashname}});
                             }
                 			break;
@@ -1393,10 +1397,9 @@ function packetHandler(err, packet, chan, callback){
 					    //console.log("undelivered "+j+" "+undelivered[j].data.cmd+" "+undelivered[j].data.data+" ");
 					    if(peers[i].destination==undelivered[j].destination)
 					    {
-                            undelivered[j].notified = true;
+
 					        th_SendData2Dest(peers[i].destination,{cmd:undelivered[j].cmd, data:undelivered[j].data});
-                            //th_SendData2Dest(MainPushServer,{cmd:"kickPeer", data:{hn:chan.hashname}});
-                			break;
+                            break;
 					    }
 					};
 				    }
