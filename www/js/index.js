@@ -1,4 +1,4 @@
-var currentver = "0.032";
+var currentver = "0.033";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -71,6 +71,16 @@ function log(x) {
             txt.innerHTML += "<BR/>" + x;
 }
 
+function isFrontAlive(args, cb){
+    //console.log(JSON.stringify(args));
+    var res = true;
+    return cb(res);
+    /*jxcore('syncCmd').call(JSON.stringify({cmd:cmd,data:data}), function(ret, err){
+        if(err)console.log(err);
+        ret=null;
+    });*/
+};
+
 var maxHistory2Send=10;
 
 
@@ -84,6 +94,9 @@ mobile = true;
 
 function jxcore_ready() {
    	// calling a method from JXcore (app.js)
+    jxcore('isFrontAlive').register(isFrontAlive);
+    jxcore('dataFromBackend').register(dataFromBackend);
+
     jxcore('asyncPing').call('', function(ret, err){
 		if(err){
             console.log(JSON.stringify(err));
@@ -104,8 +117,8 @@ function jxcore_ready() {
             if(d.peers.length>0){
                 Main.chs = d.channels;
             }
-            if(d.profile.nick.length>0 &&
-                d.config.hashname.length>0
+            if(d.profile && d.profile.nick && d.profile.nick.length>0 &&
+                d.config && d.config.hashname && d.config.hashname.length>0
             ){
                 Main.profile.nick = d.profile.nick;
                 Main.profile.destination = d.config.hashname;
@@ -175,6 +188,13 @@ function getQueueF(){
 		err=null;
 	});
 };
+
+function dataFromBackend(data){
+    try{
+        var d=JSON.parse(data);
+        if(d.cmd)	onDataFromBackend(d);
+    }catch(err){console.log(JSON.stringify(err));};
+}
 
 var open;
 

@@ -108,9 +108,10 @@ if(mobile){
 
 	function Send2UI(cmd, data){
 		queue.push(	JSON.stringify({cmd:cmd,data:data})	);
+        //Mobile('dataFromBackend').call( JSON.stringify({cmd:cmd,data:data}) );
 	};
 
-	Mobile('asyncCmd').registerAsync(function(data, callback){
+    Mobile('asyncCmd').registerAsync(function(data, callback){
 		//console.log("asyncCmd");
 		//console.log(data);
 		var message=JSON.parse(data);
@@ -118,6 +119,14 @@ if(mobile){
 		ProcessCmdFromUI(message.cmd,message.data);
 		return;
 	});
+    /*Mobile('syncCmd').registerSync(function(data, callback){
+        //console.log("asyncCmd");
+        //console.log(data);
+        var message=JSON.parse(data);
+        callback(null);
+        ProcessCmdFromUI(message.cmd,message.data);
+        return;
+    });*/
 
 	Mobile('getQueue').registerAsync(function(message, callback) {
 		var buffer={};
@@ -1437,12 +1446,21 @@ function packetHandler(err, packet, chan, callback){
     }
 
     if(packet.js.cmd=="newchatmsg" || packet.js.cmd=="chatmsg2group" || packet.js.cmd=="addyou"){
-        Mobile.notify(function(err, location) {
-          if (err)
-            console.error("Error Notify", err);
-          else
-            console.log("Notify");
+        frontAlive = false;
+        Mobile("isFrontAlive").call({q:"w"}, function(ret){
+            frontAlive = true;
         });
+        setTimeout(function(){
+            if(!frontAlive){
+                Mobile.notify(function(err, location) {
+                  if (err)
+                    console.error("Error Notify", err);
+                  else
+                    console.log("Notify");
+                });
+            }
+        },1000);
+        
     };
 
 	callback(true);
@@ -1502,10 +1520,16 @@ function th_SendData2Dest(hashname,q){
 var alarmtout=0;
 var smallestfreeram=3000000;
 var mb=1024*1024;
-
+var frontAlive = false;
 function checkMem(){
 	//console.log(util.inspect(process.memoryUsage()));
 	//var total=os.totalmem()/mb;
+    frontAlive = false;
+    Mobile("isFrontAlive").call({q:"w"}, function(ret){
+        frontAlive = true;
+    });
+    setTimeout(function(){console.log("frontAlive="+frontAlive);},1000);
+
 	var free=os.freemem()/mb;
 	var rss=process.memoryUsage().rss/mb;
 	//if(smallestfreeram>free)smallestfreeram=free;
