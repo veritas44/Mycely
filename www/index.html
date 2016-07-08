@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=yes" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: 'unsafe-eval'; style-src 'self' 'unsafe-inline';frame-src *; media-src *;  script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * ws://* wss://* ">
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 , width=device-width, height=device-height-->
+    <!--<meta name="viewport" content="user-scalable=yes, initial-scale=1.5, maximum-scale=3, minimum-scale=1.5, target-densitydpi=device-dpi" />-->
+    <meta name="viewport" content="initial-scale=1.0001, minimum-scale=1.0001, maximum-scale=1.0001, user-scalable=no, target-densitydpi=device-dpi" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link href="css/default/jquery.mobile-1.4.5.min.css" rel="stylesheet" media="screen">-->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/jasny-bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/modernizr.js"></script>
+
+    <!--<link rel="stylesheet" href="css/animate.css">-->
+    <link rel="stylesheet" href="js/multiselect/css/multi-select.css" media="screen" type="text/css">
+    <!--<link rel="stylesheet" href="css/jquery.mobile.simpledialog.min.css" media="screen" type="text/css">-->
+
+    <title>Mycely</title>
+    <style type="text/css">
+
+        @font-face {
+            font-family: 'roboto_condensedlight';
+            src: url('/fonts/roboto_lightcondensed/RobotoCondensed-Light-webfont.eot');
+            src: url('/fonts/roboto_lightcondensed/RobotoCondensed-Light-webfont.eot?#iefix') format('embedded-opentype'),
+                 url('/fonts/roboto_lightcondensed/RobotoCondensed-Light-webfont.woff') format('woff'),
+                 url('/fonts/roboto_lightcondensed/RobotoCondensed-Light-webfont.ttf') format('truetype'),
+                 url('/fonts/roboto_lightcondensed/RobotoCondensed-Light-webfont.svg#roboto_condensedlight') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'roboto_condensedregular';
+            src: url('/fonts/roboto_condensed/RobotoCondensed-Regular-webfont.eot');
+            src: url('/fonts/roboto_condensed/RobotoCondensed-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+                 url('/fonts/roboto_condensed/RobotoCondensed-Regular-webfont.woff') format('woff'),
+                 url('/fonts/roboto_condensed/RobotoCondensed-Regular-webfont.ttf') format('truetype'),
+                 url('/fonts/roboto_condensed/RobotoCondensed-Regular-webfont.svg#roboto_condensedregular') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {font-family: "roboto_condensedlight",sans; cursor: pointer;}
+        body {font-family: "roboto_condensedregular",sans;font-size:1em;}
+
+
+        .bold{
+        	font-weight:700;
+        }
+        .red{
+        	 color:red;
+        }
+        .blue{
+        	color:blue;
+        }
+        .green{
+        	 color:green;
+        }
+
+        .hbut{
+        	 margin:5px;padding: 3px 7px;border:1px solid Gray ;border-radius:5px;color:Gray ;
+        }
+        .hbut:hover{
+        	 margin:5px;padding: 3px 7px;border:1px solid DimGray ;border-radius:5px;color:DimGray ;
+        }
+        .hbut.red{
+        	 margin:5px;padding: 3px 7px;border:1px solid red;border-radius:5px;color:red;
+        }
+        .hbut.red:hover{
+        	 margin:5px;padding: 3px 7px;border:1px solid DarkRed;border-radius:5px;color:DarkRed;
+        }
+        .hbut.green{
+        	 margin:5px;padding: 3px 7px;border:1px solid green;border-radius:5px;color:green;
+        }
+        .hbut.green:hover{
+        	 margin:5px;padding: 3px 7px;border:1px solid LimeGreen;border-radius:5px;color:LimeGreen;
+        }
+        .hbut.blue{
+        	 margin:5px;padding: 3px 7px;border:1px solid blue;border-radius:5px;color:blue;
+        }
+        .hbut.blue:hover{
+        	 margin:5px;padding: 3px 7px;border:1px solid skyblue;border-radius:5px;color:skyblue;
+        }
+
+
+        .block,.unblock,.read,.follow,.unfollow,.chat,.close{
+        	padding: 0.2rem;
+        };
+
+
+
+
+        .flexcontainer {
+           display: -webkit-flex;
+           display: flex;
+           -webkit-flex-direction: column;
+           flex-direction: column;
+        }
+        #dropgroupactions,#droppeers{
+        	width:auto;
+        }
+        #LeftPanelPeers,#LeftPanelGroups,#LeftPanelChannels,#dropgrouppeers{
+        	width: 100%;
+        }
+        #LeftPanelPeers li button span,#LeftPanelGroups li button span,#LeftPanelChannels li button span,#dropgrouppeers li button,#ChatsPeers_P li button,#Groups_P-list li button,#Channels_P-list li button{
+        	color:#14d2d2;
+        	background: #1e1e28/*#464b4c*/;
+        	border-top: 1px solid #67686d;
+        	border-bottom: 1px solid #1e1e1e;
+        	border-left: 0 none;
+        	border-right: 0 none;
+        	font-size:1.2em;
+        }
+        #LeftPanelPeers li:last-child button span,#LeftPanelGroups li:last-child button span,#LeftPanelChannels li:last-child button span,#dropgrouppeers li:last-child button,#ChatsPeers_P li:last-child button,#Groups_P-list li:last-child button,#Channels_P-list li:last-child button{
+        	border-bottom: 1px solid #67686d;
+        }
+        .f-dropdown.drop-left:before, .f-dropdown.drop-left:after {
+            	left: -8px;
+        	display:none;
+        }
+
+
+
+
+
+
+        .tab_content{
+        	width:100%;
+        	height:100%;
+        }
+        .iconcntr{
+        	 height: 40px;
+            	margin-bottom: 8px;
+            	margin-left: auto;
+            	margin-top: -3px;
+            	padding: 1px;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        html, body {
+            	height: 100%;
+        }
+        body {
+            	padding: 65px 10px 10px;
+        }
+        .navbar-toggle {
+            	float: left;
+            	margin-left: 15px;
+        }
+        @media (min-width: 0px) {
+        	.navbar-toggle {
+        	    	display: block;
+        	}
+        }
+        @media (min-width: 992px) {
+        	body {
+        	    	padding: 0;
+        	}
+        	.navbar {
+        	    	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+        	    	border: medium none;
+        	    	right: auto;
+        	}
+        }
+
+        .navbar-default .navbar-toggle, .navbar-default .navbar-toggle:hover,.navbar-default .navbar-toggle:focus {
+        	background:#1e1e28;
+            	border: 0px none;
+        }
+        .center-block {
+        	display: inline-block;
+        	margin-left: auto;
+        	margin-right: auto;
+        }
+        .ui-loader { display:none; }
+        .darkblue, .navmenu-default .navmenu-brand,.navmenu-default .navmenu-brand:hover, .navmenu-default .navmenu-brand:hover, .navbar-default .navbar-offcanvas .navmenu-brand:hover, .navmenu-default .navmenu-brand:focus, .navbar-default .navbar-offcanvas .navmenu-brand:focus, .navbar-default .navbar-offcanvas .navmenu-brand, .navmenu-default .navmenu-nav > .active > a, .navbar-default .navbar-offcanvas .navmenu-nav > .active > a, .navmenu-default .navmenu-nav > .active > a:hover, .navbar-default .navbar-offcanvas .navmenu-nav > .active > a:hover, .navmenu-default .navmenu-nav > .active > a:focus, .navbar-default .navbar-offcanvas .navmenu-nav > .active > a:focus, .navmenu-default .navmenu-nav > li > a, .navbar-default .navbar-offcanvas .navmenu-nav > li > a, .navmenu-default .navmenu-nav > li > a:hover, .navbar-default .navbar-offcanvas .navmenu-nav > li > a:hover{
+        	color:#14D2D2;
+        	background-color:#1e1e28;
+        }
+        hr {margin:0}
+        audio {display:none}
+
+
+        #my-select-button > span {display:none;}
+        .ms-container {width: 100%;}
+
+
+        #console-log-text{
+            position:absolute;
+            height:100%;
+            width:100%;
+            top:70px;
+            left:10px;
+            overflow:auto;
+            background:transparent;
+            color:#14d2d2;
+            z-index:1;
+            border:0px none;
+            font-size:1em;
+        }
+        #console-log-div legend{ display:none;  }
+
+
+
+
+
+
+
+        .context {
+          font-size: 1.3em;
+          position: absolute;
+          width: auto;
+          height: auto;
+          padding: 5px 0px;
+          border-radius: 5px;
+          top: 10;
+          left: 10;
+          background-color: #1e1e28;
+          box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+          color: #14d2d2;
+        }
+
+        .context .context_item {
+          height: 32px;
+          line-height: 32px;
+          cursor: pointer;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+
+        .context .context_item:hover { /*background-color: #2ecc71;*/ }
+
+        .context .context_item .inner_item { margin: 0px 10px; }
+
+        .context .context_item .inner_item i {
+          margin: 0 5px 0 0;
+          font-weight: bold;
+        }
+
+        .context .context_hr {
+          height: 1px;
+          border-top: 1px solid #14d2d2;
+          margin: 3px 10px;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="css/genericons/genericons.css" />
+</head>
+
+<body id="top" data-role="page" style="padding: 65px 0px 10px;">
+	<div id="Main">
+		<div class="navbar navbar-default navbar-fixed-top" style="background-color:#1e1e28;width:100%;">
+			<a type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#leftPane"  onclick="$('.chatscnt_P').removeClass('bold');$('#LeftPanelChannels').css('display','none');$('#LeftPanelGroups').css('display','none');$('#LeftPanelPeers').css('display','block');" style="color:#14D2D2;font-size:1.5em;" ><!-- data-canvas="body" -->
+				<img src="img/user.png" style="height:30px;" />
+				(<span class="chatscnt_P">0</span>)
+			</a>
+			<a type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#leftPane" onclick="$('.groupscnt_P').removeClass('bold');$('#LeftPanelPeers').css('display','none');$('#LeftPanelChannels').css('display','none');$('#LeftPanelGroups').css('display','block');" style="color:#14D2D2;font-size:1.5em;margin-left:-20px;">
+				<img src="img/group.png"  style="display:inline-block;cursor:pointer;height:30px;" >
+	 			(<span class="groupscnt_P">0</span>)&nbsp;&nbsp;
+			</a>
+			<a id="Mycely_btn" type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#leftPane" onclick="$('.chcnt_P').removeClass('bold');$('#LeftPanelPeers').css('display','none');$('#LeftPanelGroups').css('display','none');$('#LeftPanelChannels').css('display','block');" style="color:#14D2D2;font-size:1.5em;margin-left:-20px;display:none;">
+				<img src="img/logo_but.png"  style="display:inline-block;cursor:pointer;height:30px;" >
+	 			<!--(<span class="chcnt_P">0</span>)&nbsp;&nbsp;-->
+			</a>
+
+			<button type="button" class="navbar-toggle pull-right" data-toggle="offcanvas" data-target="#rightPane" data-canvas="body">
+                <img id="menubut" src="img/menu_1.png" style="height:30px;" />
+			</button>
+
+		</div>
+		<nav id="leftPane" class="navmenu navmenu-default navmenu-fixed-left offcanvas" role="navigation"  style="background-color:#1e1e28;color:#14D2D2;max-width:70%;">
+		  	<div id="LeftPanelPeers" style="list-style: none outside none;" >
+				<input type="text" id="searchpeers_P" class="navmenu-brand lang" style="width:100%;" data-lang="search" data-lang-to="placeholder" placeholder="Поиск" onkeyup="var value=$(this).val();SearchHashtagPeer_P(value);return false;" />
+
+				<li style="width:100%;text-align:center;"><a href="#" data-toggle="modal" data-target="#addPeer" style="width:100%;"><img src="img/add.png" class="iconcntr" ></img></a></li>
+
+				<section  id="ChatsPeers_P" style="padding-bottom: 8.25rem;">
+					<ul id="ChatPeers_P-list" style="padding:0;text-align:left;background:#333;list-style: none outside none;margin: 0;">
+						<li v-for="peer in peers">
+							<button class="topdivchatpeer_P  button {{ peer.destination }}" style="max-width:99%;overflow-x: hidden;white-space:nowrap;text-overflow: ellipsis;padding-right: 4.001rem;padding-bottom: 8px;padding-top: 8px;padding-left: 10px;margin:0 0;width:100%;text-align:left;background: -moz-linear-gradient(80% 49% 268deg, #414B51, #715D5C 100%);" onclick="SelectPeerForChat('{{ peer.destination }}');">&nbsp;<b data-destination="{{ peer.destination }}" class="nick_P" style="font-size:1.4em;">{{ peer.nick }}</b>
+								<p class="newmsgcnttop c{{ peer.destination }}" style="margin:5px;font-size:1rem" ><span class="lang" data-lang="new_msgs"></span><span  class="newmsgcnt c{{ peer.destination }}" ></span></p>
+							</button>
+						</li>
+					</ul>
+				</section>
+			</div>
+			<div id="LeftPanelGroups" style="list-style: none outside none;display:none;">
+				<input type="text" id="searchgroups_P" class="navmenu-brand lang" style="width:100%;" data-lang="search" data-lang-to="placeholder" placeholder="Поиск" onkeyup="var value=$(this).val();SearchHashtagPeer_P(value);return false;" />
+
+				<li style="width:100%;text-align:center;"><a href="#" data-toggle="modal" data-target="#newGroup" style="width:100%;"><img src="img/add.png" class="iconcntr" ></img></a></li>
+				<section  id="Groups_P" style="padding-bottom: 8.25rem;">
+					<ul id="Groups_P-list" style="padding:0;text-align:left;background:#333;list-style: none outside none;margin: 0;">
+						<li v-for="group in groups">
+							<button class="topdivgroup_P  button {{ group.groupid }}" style="max-width:99%;overflow-x: hidden;white-space:nowrap;text-overflow: ellipsis;padding-right: 4.001rem;padding-bottom: 8px;padding-top: 8px;padding-left: 10px;margin:0 0;width:100%;text-align:left;background: -moz-linear-gradient(80% 49% 268deg, #414B51, #715D5C 100%);" onclick="SelectGroupForChat('{{ group.groupid }}');">&nbsp;<b data-destination="{{ group.groupid }}" class="nick_P" style="font-size:1.4em;">{{ group.name }}</b>
+								<p class="newgmsgcnttop g{{ group.groupid }}" style="margin:5px;font-size:1rem" ><span class="lang" data-lang="new_msgs"></span><span  class="newgmsgcnt g{{ group.groupid }}" ></span></p>
+							</button>
+						</li>
+					</ul>
+				</section>
+			</div>
+			<div id="LeftPanelChannels" style="list-style: none outside none;" >
+				<input type="text" id="searchchannels_P" class="navmenu-brand lang" style="width:100%;" data-lang="search" data-lang-to="placeholder" placeholder="Поиск" onkeyup="var value=$(this).val();SearchHashtagChannel_P(value);return false;" />
+
+				<li style="width:100%;text-align:center;"><a href="#" data-toggle="modal" data-target="#addChannel" style="width:100%;"><img src="img/add.png" class="iconcntr" ></img></a></li>
+
+				<section  id="Channels_P" style="padding-bottom: 8.25rem;">
+					<ul id="Channels_P-list" style="padding:0;text-align:left;background:#333;list-style: none outside none;margin: 0;">
+						<li v-for="ch in chs">
+							<button class="topdivchannel_P  button {{ ch.id }}" style="max-width:99%;overflow-x: hidden;white-space:nowrap;text-overflow: ellipsis;padding-right: 4.001rem;padding-bottom: 8px;padding-top: 8px;padding-left: 10px;margin:0 0;width:100%;text-align:left;background: -moz-linear-gradient(80% 49% 268deg, #414B51, #715D5C 100%);" onclick="SelectChannel('{{ ch.id }}');">&nbsp;<b data-destination="{{ ch.id }}" class="nick_P" style="font-size:1.4em;">{{ ch.name }}</b>
+								<!--<p class="newchmsgcnttop cH{{ ch.id }}" style="margin:5px;font-size:1rem" ><span class="lang" data-lang="new_msgs"></span><span  class="newchmsgcnt cH{{ ch.id }}" ></span></p>
+								-->
+                            </button>
+						</li>
+					</ul>
+				</section>
+			</div>
+		</nav>
+		<nav id="rightPane" class="navmenu navmenu-default navmenu-fixed-right offcanvas" role="navigation" style="background-color:#1e1e28;color:#14D2D2;max-width: 30%;">
+		<!--<a class="navmenu-brand" href="#">Brand</a>-->
+		  	<ul class="nav navmenu-nav">
+                <!--<li style="width:100%;text-align:center;margin-top:5px;"><a class="lang" data-lang="lang" onclick="setTimeout(function(){$('#open_select_lang').click();},500);" style="width:100%;font-size:2em;color:#14d2d2;">lang</a></li>-->
+				<li style="width:100%;text-align:center;margin-top:5px;"><a  onclick="$('#myProfileH').click();unselectAllRooms();" style="width:100%;"><img src="img/sets.png" class="iconcntr" style="height:60px;padding:10px;"></img></a></li>
+				<li style="width:100%;text-align:center;margin-top:5px;"><a  onclick="$('#aboutH').click();unselectAllRooms();" style="width:100%;"><img src="img/info.png" class="iconcntr" style="height:60px;padding:10px;"></img></a></li>
+                <li style="width:100%;text-align:center;margin-top:5px;"><a  onclick="$('#homeH').click();unselectAllRooms();" style="width:100%;font-size:2em;color:#14d2d2;" class="lang" data-lang="logs" >Logs</a></li>
+                <hr>
+				<!--<li style="width:100%;text-align:center;margin-top:5px;"><a  onclick="/*cordova.plugins.backgroundMode.disable();*/Send2Backend('Exit', {});" style="width:100%;font-size:2em;color:#14d2d2;" class="lang" data-lang="exit" >Exit</a></li>-->
+                <li style="width:100%;text-align:center;margin-top:5px;"><a  onclick="unselectAllRooms();if(confirm(localize.get('conf_new_id')))Send2Backend('deldbs', {});" style="width:100%;font-size:2em;color:#14d2d2;" class="lang" data-lang="new_id" >New ID</a></li>
+				<!--<li style="width:100%;text-align:center;margin-top:5px;"><a  onclick="if(confirm(localize.get('conf_new_dgb')))Send2Backend('deldbch', {});" style="width:100%;font-size:1.2em;color:#14d2d2;" class="lang" data-lang="new_dbg" >Clear Groups</a></li>-->
+			</ul>
+		</nav>
+
+
+
+
+		<ul class="nav nav-tabs" role="tablist" style="display:none;">
+		    <li class="active"><a id="homeH" href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+		    <li ><a id="qrtabH" href="#qrtab" aria-controls="qrtab" role="tab" data-toggle="tab">Home</a></li>
+		    <li ><a id="ChatsTabH" href="#ChatsTab" aria-controls="home" role="tab" data-toggle="tab">Chats</a></li>
+		    <li ><a id="GroupsTabH" href="#GroupsTab_P" aria-controls="GroupsTab" role="tab" data-toggle="tab" >Groups</a>
+		    <li ><a id="ChannelsTabH" href="#ChannelsTab_P" aria-controls="ChannelsTab" role="tab" data-toggle="tab">Channels</a>
+		    <li ><a id="myProfileH" href="#myProfile" aria-controls="myProfile" role="tab" data-toggle="tab">Profile</a></li>
+		    <li ><a id="aboutH" href="#about" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+		    <li ><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content" style="padding:0;margin:0;width:100%;">
+			<div role="tabpanel" class="tab-pane active" id="home" style="background:#1e1e28;padding:0;margin:0;width:100%;">
+				<img src="img/main.png" style="width: 100%;" ></img>
+                <div id="console-log-div"></div>
+			</div>
+
+			<div role="tabpanel" class="tab-pane" id="qrtab">
+				</br>
+                <div id="qrcode" align="center"></div>
+			</div>
+
+			<div role="tabpanel" class="tab-pane" id="myProfile">
+				<template v-if="profile.destination">
+					<div class="col-xs-12" >
+						<table class="table col-xxs-12" >
+							<tr><td>
+                                <a class="btn  btn-block darkblue" data-toggle="modal" data-target="#addPeer" style="height:100%;white-space:unset;"><h6 style="font-size:1.2em;" class="lang" data-lang="add_by_id">Add friend with ID</h6></a>
+							</td><td>
+                                <a class="btn  btn-block darkblue" onclick="if(!CheckNickIsSet()){return;};if(mobile){dontForceForeground=true;if(!isIos)window.plugins.socialsharing.shareViaEmail( localize.get('send_id1')+'{{ profile.nick }}'+localize.get('send_id2')+'{{ profile.destination }}'+localize.get('send_id3')+'{{ profile.destination }}', localize.get('send_id4'), null, null,  null, null,  function(){console.log('shared');dontForceForeground=false;}, function(){console.log('error sharing');});   else navigator.share(localize.get('send_id1')+'{{ profile.nick }}'+localize.get('send_id2')+'{{ profile.destination }}',localize.get('send_id4'),'text/plain');} else alert('{{ profile.destination }}');" style="white-space:unset;"><h6 style="font-size:1.2em;" class="lang" data-lang="send_your_id">Send your ID</h6></a>
+							</td> </tr>
+							<tr> <td>
+								<a class="btn btn-block darkblue" onclick="ScanQR();" style="height:100%;white-space:unset;"><h6 style="font-size:1.2em;" class="lang" data-lang="scan_qr">Scan QR-code</h6></a>
+							</td><td>
+								<a class="btn  btn-block darkblue" onclick="GenerateQR();" style="height:100%;white-space:unset;"><h6 style="font-size:1.2em;" class="lang" data-lang="gen_qr">Gen QR-code</h6></a>
+							</td> </tr>
+                            <tr> <td>
+								<a class="btn  btn-block darkblue" data-toggle="modal" data-target="#addPeerByOTC" style="height:100%;white-space:unset;"><h6 style="font-size:1.2em;" class="lang" data-lang="add_by_otc">Add friend by OTC</h6></a>
+							</td><td>
+								<a class="btn btn-block darkblue" onclick="GenOTC();" style="height:100%;white-space:unset;"><h6 style="font-size:1.2em;" class="lang" data-lang="gen_otc">Gen OTC</h6></a>
+							</td> </tr>
+						</table>
+					</div>
+					<div align="center" style="font-size:1.3em;" >
+						<label class="lang" data-lang="your_nick">Your nickname</label>&nbsp;{{ profile.nick }}
+						<input id="nick_P" type="text" class="lang" data-lang="your_nick_here" data-lang-to="placeholder" placeholder="Enter your nick here" maxlength=15 style="width:100%;text-align:center;font-size:1.5em;" />
+				    	</div>
+					<div align="center">
+						<br>
+						<a class='btn btn-block darkblue lang' onclick="updateProfile();" style="font-size:1.2em;" data-lang="set">Set</a>
+					</div>
+					</br>
+					<div align="center" style="font-size:1.2em;" >
+						<a class="lang" data-lang="lang" onclick="$('#open_select_lang').click();" style="width:100%;font-size:1.2em;color:#565a67;">lang</a>
+				    	</div>
+				</template>
+				<h6 v-else>Your ID is not ready. Wait.</h6>
+            </div>
+
+
+			<div role="tabpanel" class="tab-pane" id="about">
+				<div  align="center" style="font-size:1.2em;">
+					<b class="lang" data-lang="about">About.</b></br>
+					<span class="subheader lang" style="font-size:1.2em;" data-lang="about_ver">
+						Info can change
+					</span>
+					<a onclick='userChecksUpdate = true; Send2Backend("checkUpdate", {});' type="button" class="btn btn-primary lang" id="check4update" style="font-size:1.2em;" data-lang="check_upd">Check for update</a>
+					<hr>
+				</div>
+				<div   style="margin: 1.5em; font-size:1.2em;">
+					<p style="font-size:1.2em;" class="lang" data-lang="about_txt">
+						Mycely is P2P network (peer-to-peer).
+					</p>
+					</br>
+					<p style="font-size:1.2em;">
+						 <span class="subheader" >Indiegogo</span>&nbsp;http://igg.me/at/Mycely
+					</p>
+					</br>
+					<p style="font-size:1.2em;">
+						 <span class="subheader lang" data-lang="github" >GitHub repo</span>&nbsp;https://github.com/Zeipt/Mycely
+					</p>
+					</br>
+					<p style="font-size:1.2em;">
+						 <span class="subheader lang" data-lang="mail_to_dev">Contact developer</span>&nbsp;zeiptz@gmail.com
+					</p>
+					</br>
+					<p style="font-size:1.2em;">
+						 <span class="subheader lang" data-lang="support_in_ua">In Ukraine you can support us directly</span>
+					</p>
+					</br></br>
+
+				</div>
+				<img src="img/made_in_UA.png" class="img-responsive" ></img>
+			</div>
+
+
+			<div role="tabpanel" class="tab-pane" id="ChatsTab" >
+				<div align="center" >
+                    <div class="btn-group" style="margin-top:-1em;">
+                        <button class="btn-group dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="display:inline-block;cursor:pointer;background: transparent;border: 0 none;box-shadow:none;"><h3 class="curChatNick_P" style="font-weight:700;display:inline-block;" data-destination="{{ chat.dest }}">{{ chat.nick }}</h3> <img src="img/arrow_dark.png" style="height:5px;verical-align:middle;"></button>
+                        <ul class="dropdown-menu pull-right" style="min-width:20px;">
+                            <li><a href="#" class="" style="display:block;padding: 3px 2px;"><img src="img/info_dark.png" style="width:41px;" onclick="AboutPeer();"></img></a></li>
+                            <li><a href="#" class="red" style="display:block;padding: 3px 2px;"><img src="img/block.png" style="width:41px;" onclick="BlockPeer();"></img></a></li>
+				    		<li><a href="#" class="red" style="display:block;padding: 3px 2px;"><img src="img/delete.png" style="width:41px;" onclick="DelPeer();"></img></a></li>
+                        </ul>
+                        <hr>
+                        <!-- (android_ver > 4.1 && peer.os == 'android' && peer.ver > 4.1) -->
+                        <button v-if="chat.android_ver > 4.1" class="btn btn-primary" id="open-room" style="display:none;"> (фича в разработке, пока лучше не пытаться даже кликать!)</button>
+                        <button v-if="chat.android_ver > 4.1" class="btn btn-primary lang" id="close-session" onclick="closecall();" style="display:none;" data-lang="stop_call">hangup</button>
+                        <hr>
+                        <div v-if="chat.android_ver > 4.1" class="small-9 columns" id="CallsRoom_P" ></div>
+                    </div>
+                    <template v-if="chat.android_ver > 4.1">
+                        <a  href="#" class="call" onclick="call();" style="float:right;" ><span class="genericon genericon-handset" style="width:41px;height:34px;font-size:41px;transform:rotate(-90deg)"></span></a>
+                    </template>
+                    <hr>
+                </div>
+                <div>
+					<div id="ChatMsgs_P-list" class="ChatMsgs_P-list" style="height:100%;max-height:100%; width:102%;overflow-x:hidden;overflow-y:auto;padding: 10px 34px 20px 24px;">
+						<div v-for="msg in chat.msgs">
+							<div class="msg" style="max-width:100%;word-wrap: break-word;line-height: 1.6em;" id="{{ msg.destination }}" ondblclick="tapholdHandler(this.id);">
+								<div class="{{ (msg.destination != profile.destination) ? 'left' : 'right' }}" style="color:#1e1e28;font-size:1.5em;text-align:{{ (msg.destination != profile.destination) ? 'left' : 'right' }};width:100%;">
+
+									<div  style="color:#565a67;font-size:.7em;">{{ new Date(msg.ts).toLocaleTimeString() }}</div>
+
+									<div style="color:#565a67;" >{{ msg.txt }} <span class="genericon genericon-checkmark" v-if="msg.dlvrd"></span></div>
+								</div>
+								<hr>
+								<div style='clear:both;'></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<textarea  id="chatmsginput_P" class="form-control" style="display:none;padding:0;position:absolute;bottom:0;left:3%;margin: 0 0 0 -2%;width:98%; font-size:2em;border: 1px solid #565a67;" rows="3"></textarea>
+            </div>
+
+
+            <div role="tabpanel" class="tab-pane" id="GroupsTab_P" >
+				<div>
+					<div class="btn-group" style="margin-top:-1em;">
+                        <button class="btn-group dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="display:inline-block;cursor:pointer;background: transparent;border: 0 none;box-shadow:none;"><h3 class="curGroupName_P" style="font-weight:700;display:inline-block;" data-groupid="{{ group.groupid }}">&nbsp;{{ group.name }}</h3> <img src="img/arrow_dark.png" style="height:5px;verical-align:middle;" /></button>
+						<ul id="dropgroupactions" class="dropdown-menu pull-right" style="min-width:20px;">
+                            <li><a href="#" class="" style="display:block;padding: 3px 2px;"><img src="img/info_dark.png" style="width:41px;" onclick="AboutGroup();"></img></a></li>
+							<li><a href="#" class="red" style="display:block;padding: 3px 2px;"><img src="img/block.png" style="width:41px;" onclick="BlockGroup();"></img></a></li>
+                            <li><a href="#" class="red" style="display:block;padding: 3px 2px;"><img src="img/delete.png" style="width:41px;" onclick="DelGroup();"></img></a></li>
+						</ul>
+					</div>
+
+					<div class="btn-group" style="margin-top:-1em;">
+						<button class="btn-group dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="display:inline-block;cursor:pointer;background:transparent;border: 0 none;box-shadow:none;"><img src="img/group_act_icon.png" style="height:3rem;" /></button>
+						<ul class="dropdown-menu" style="font-size: 2em;left:0%;">
+                            <li><a href="#" id="dropgrouppeers_add" onclick="AddPeers2Group();"><span class="genericon genericon-plus" style="font-size: 3em;"></span></a></li>
+							<div id="GroupPeers_P-list">
+								<li v-for="peer in group.peers">
+									<a data-uuid="{{ peer.destination }}" class="topdivgrouppeer_P {{ peer.destination }} secondary button small-12 columns" style="width:100%;text-align:left;overflow-x: hidden;white-space:nowrap;text-overflow: ellipsis;padding-right: 4.001rem;padding-bottom: 8px;padding-top: 8px;padding-left: 10px;margin:0 0;">&nbsp;<b  class="nick_P" >{{ peer.nick }}</b></a>
+								</li>
+							</div>
+						</ul>
+					</div>
+				</div>
+				<div>
+					<div id="GroupMsgs_P-list" class="GroupMsgs_P-list" style="height:100%;max-height:100%; width:102%;overflow-x:hidden;overflow-y:auto;padding: 10px 34px 20px 24px;">
+						<div v-for="msg in group.msgs">
+							<div class="msg" style="max-width:100%;word-wrap: break-word;line-height: 1.6em;">
+								<div class="{{ (msg.destination != profile.destination) ? 'left' : 'right' }} {{ msg.ts }}" style="color:#1e1e28;font-size:1.5em;text-align:{{ (msg.destination != profile.destination) ? 'left' : 'right' }};width:100%;">
+									<b>{{ (msg.destination != profile.destination) ? msg.nick : "" }}</b>
+									<div  style="color:#565a67;font-size:.7em;">{{ new Date(msg.ts).toLocaleTimeString() }}</div>
+
+									<div style="color:#565a67;" >{{ msg.txt }} <span class="genericon genericon-checkmark" v-if="msg.dlvrd"></span></div>
+								</div>
+								<hr>
+								<div style='clear:both;'></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<textarea  id="GroupsTabchatmsginput_P" class="form-control" style="display:none;padding:0;position:absolute;bottom:0;left:3%;margin: 0 0 0 -2%;width:98%; font-size:2em;border: 1px solid #565a67;" rows="3"></textarea>
+
+			</div>
+
+
+			<div role="tabpanel" class="tab-pane" id="ChannelsTab_P" >
+				<!--<div>-->
+					<div class="btn-group" style="margin-top:-1em;">
+                        <button class="btn-group dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="display:inline-block;cursor:pointer;background: transparent;border: 0 none;box-shadow:none;"><h3 class="curChannelName_P" style="font-weight:700;display:inline-block;" data-groupid="{{ channel.id }}">&nbsp;{{ channel.name }}</h3> <img src="img/arrow_dark.png" style="height:5px;verical-align:middle;" /></button>
+						<ul id="dropchactions" class="dropdown-menu pull-right" style="min-width:20px;">
+                            <li><a href="#" class="" style="display:block;padding: 3px 2px;"><img src="img/info_dark.png" style="width:41px;" onclick="AboutChannel();"></img></a></li>
+							<li><a href="#" class="red" style="display:block;padding: 3px 2px;"><img src="img/delete.png" style="width:41px;" onclick="DelChannel();"></img></a></li>
+						</ul>
+					</div>
+				<!--</div>
+				<div>-->
+					<ul class="nav nav-tabs pull-right" role="tablist" style="/*display:none;*/">
+					    <li id="allchH" class="active"><a href="#allch" aria-controls="allch" role="tab" data-toggle="tab">All ch msgs</a></li>
+					    <li id="mychH" ><a href="#mych" aria-controls="mych" role="tab" data-toggle="tab">My ch msgs</a></li>
+					</ul>
+					<div class="tab-content" style="padding:0;margin:0;width:100%;">
+						<div role="tabpanel" class="tab-pane" id="allch">
+							<div id="ChannelMsgs_P-list" class="ChannelMsgs_P-list" style="height:100%;max-height:100%; width:102%;overflow-x:hidden;overflow-y:auto;padding: 10px 34px 20px 24px;">
+								<div v-for="msg in channel.msgs">
+									<template v-if="msg.my == 0">
+										<div class="msg repostable  {{ (msg.answerable > 0) ? 'answerable' : '' }}" data-msgtxt="{{ msg.txt }}" data-msgchname="{{ channel.name }}" data-msgchid="{{ channel.id }}" data-msgid="{{ msg.mid }}" data-msgkey="{{ msg.key }}" data-msgts="{{ msg.ts }}" data-msga2a="0" style="max-width:100%;word-wrap: break-word;line-height: 1.6em;">
+											<div class="{{ (msg.my == 0) ? 'left' : 'right' }} {{ msg.ts }}" style="color:#1e1e28;font-size:1.5em;text-align:{{ (msg.my == 0) ? 'left' : 'right' }};width:100%;">
+												<b>{{ msg.nick }}</b>
+												<div  style="color:#565a67;font-size:.7em;">{{ new Date(msg.ts).toLocaleTimeString() }}</div>
+
+												<div style="color:#565a67;" >{{ msg.txt }}</div>
+											</div>
+											<hr>
+											<div style='clear:both;'></div>
+										</div>
+									</template>
+								</div>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="mych">
+							<div id="MyChannelMsgs_P-list" class="ChannelMsgs_P-list" style="height:100%;max-height:100%; width:102%;overflow-x:hidden;overflow-y:auto;padding: 10px 34px 20px 24px;">
+								<div v-for="msg in channel.msgs" >
+									<template v-if="msg.my > 0">
+										<div style="border:1px dotted #000;">
+											<div class="msg {{ (msg.answerable >0) ? 'answerable' : '' }}"  data-msgtxt="{{ msg.txt }}" data-msgchname="{{ channel.name }}" data-msgchid="{{ channel.id }}"  data-msgid="{{ msg.mid }}" data-msgkey="{{ msg.key }}" data-msgts="{{ msg.ts }}" style="max-width:100%;word-wrap: break-word;line-height: 1.6em;">
+												<div class="{{ (msg.my == 0) ? 'left' : 'right' }} {{ msg.ts }} deletable" style="color:#1e1e28;font-size:1.5em;text-align:{{ (msg.my == 0) ? 'left' : 'right' }};width:100%;">
+													<b>{{ msg.nick }}</b>
+													<div  style="color:#565a67;font-size:.7em;">{{ new Date(msg.ts).toLocaleTimeString() }}</div>
+
+													<div style="color:#565a67;" >{{ msg.txt }} {{ msg.answs.length }}</div>
+												</div>
+												<hr>
+												<div style='clear:both;'></div>
+											</div>
+											<div v-for="answ in channel.answs">
+												<template v-if="msg.mid == answ.mid">
+													<div class="msg  {{ (answ.answerable >0) ? 'answerable' : '' }}"  data-msgtxt="{{ answ.txt }}" data-msgchname="{{ channel.name }}" data-msgchid="{{ channel.id }}"  data-msgid="{{ answ.mid }}" data-msgkey="{{ answ.key }}" data-msgts="{{ answ.ts }}" data-msga2a="1" style="max-width:100%;word-wrap: break-word;line-height: 1.6em;">
+														<div class="left {{ answ.ts }}" style="color:#1e1e28;font-size:1.5em;text-align:left;width:100%;">
+															<b>{{ answ.nick }}</b>
+															<div  style="color:#565a67;font-size:.7em;">{{ new Date(answ.ts).toLocaleTimeString() }}</div>
+																			<div style="color:#565a67;" >{{ answ.txt }}</div>
+														</div>
+														<hr>
+														<div style='clear:both;'></div>
+													</div>
+												</template>
+											</div>
+										</div>
+									</template>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				<!--</div>-->
+				<textarea  id="ChannelsTabchatmsginput_P" class="form-control" style="display:none;padding:0;position:absolute;bottom:0;left:3%;margin: 0 0 0 -2%;width:98%; font-size:2em;border: 1px solid #565a67;" rows="3"></textarea>
+
+			</div>
+
+
+            <div role="tabpanel" class="tab-pane" id="settings">...</div>
+
+
+
+		</div>
+
+
+
+
+
+
+
+
+
+		<!-- Modal -->
+        <div class="modal fade" id="addPeer" tabindex="-1" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="font-size:1.2em;">
+                    <div class="modal-header">
+                        <a type="button" class="close" data-dismiss="modal" ><span aria-hidden="true">&times;</span></a>
+                        <h4 class="modal-title lang"  style="color:#444;font-size:1.2em;" data-lang="req_to_add">Ask peer to add:</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input id="newcontact_hn"  type="text" class="lang" data-lang="peer_id_ph" data-lang-to="placeholder" placeholder="Peer's ID" style="width:100%;font-size:1.2em;" />
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        <a type="button" class="btn btn-primary lang" id="addContact_P" onclick="/*$('#myModal').modal('hide');*/"  style="font-size:1.2em;" data-lang="send">Send</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addPeerByOTC" tabindex="-1" role="dialog" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="font-size:1.2em;">
+                    <div class="modal-header">
+                        <a type="button" class="close" data-dismiss="modal" ><span aria-hidden="true">&times;</span></a>
+                        <h4 class="modal-title lang"  style="color:#444;font-size:1.2em;" data-lang="req_to_add">Ask peer to add:</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input id="newcontact_otc"  type="text" class="lang" data-lang="peer_otc_ph" data-lang-to="placeholder" placeholder="Peer's OTC" style="width:100%;font-size:1.2em;" />
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        <a type="button" class="btn btn-primary lang" id="addContactOTC_P" onclick="/*$('#myModal').modal('hide');*/"  style="font-size:1.2em;" data-lang="send">Send</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<a href="#" id="newPassLink" data-toggle="modal" data-target="#newPass" data-backdrop="static" style="display:none;"></a>
+		<div class="modal fade" id="newPass" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document" >
+			    	<div class="modal-content"  style="font-size:1.2em;">
+			      		<div class="modal-header">
+                            <!--<button type="button" class="close" data-dismiss="modal"  id="close_newPass"><span aria-hidden="true">&times;</span></button>-->
+                            <h4 class="modal-title lang" style="color:#444;font-size:1.2em;" data-lang="define_pass">Define your passphrase:</h4>
+			      		</div>
+			      		<div class="modal-body">
+
+						<input id="newpass" type="text"  style="width:100%;text-align:center;font-size:1.2em;" class="lang" data-lang="pass_ph" data-lang-to="placeholder" placeholder="your really long passphrase" />
+
+					</div>
+		      			<div class="modal-footer">
+                            <button type="button" class="btn btn-primary lang" id="NewPass" onclick="CreateNewPass();$('#newPass').modal('hide');"  style="font-size:1.2em;" data-lang="set">Set</button>
+		      			</div>
+		    		</div>
+		  	</div>
+		</div>
+		<a href="#" id="needPassLink" data-toggle="modal" data-target="#needPass" data-backdrop="static" style="display:none;"></a>
+		<div class="modal fade" id="needPass" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document">
+			    	<div class="modal-content" style="font-size:1.2em;">
+			      		<div class="modal-header">
+                            <!--<button type="button" class="close" data-dismiss="modal"  id="close_needPass"><span aria-hidden="true">&times;</span></button>-->
+                            <h4 class="modal-title lang"  style="color:#444;font-size:1.2em;" data-lang="enter_pass">Enter your passphrase:</h4>
+			      		</div>
+			      		<div class="modal-body">
+
+						<input id="needpass" type="password"  style="width:100%;text-align:center;font-size:1.2em;" class="lang" data-lang="your_pass_ph" data-lang-to="placeholder" placeholder="your passphrase" />
+
+					</div>
+		      			<div class="modal-footer">
+                            <button type="button" class="btn btn-primary lang" id="NewPass" onclick="sendPass();$('#needPass').modal('hide');"  style="font-size:1.2em;" data-lang="continue">Continue</button>
+		      			</div>
+		    		</div>
+		  	</div>
+		</div>
+		<a href="#" id="open_window_admin_users" data-toggle="modal" data-target="#adminUsersInGroup"  style=" display:none;"></a>
+		<div  class="modal fade" id="adminUsersInGroup" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document">
+			    	<div class="modal-content" style="font-size:1.2em;">
+			      		<div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_adminUsersInGroup"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title lang" style="font-size:1.2em;color:#444;" data-lang="add_to_group">Add peer to group:</h4>
+			      		</div>
+			      		<div class="modal-body">
+                            <select multiple="multiple" id="my-select" name="my-select[]" style="font-size:1.2em;"></select>
+			      		</div>
+		      			<div class="modal-footer">
+                            <button type="button" class="btn btn-default lang" data-dismiss="modal" style="font-size:1.2em;" data-lang="close">Close</button>
+		      			</div>
+		    		</div>
+		  	</div>
+		</div>
+
+		<div class="modal fade" id="newGroup" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document">
+		    	<div class="modal-content" style="font-size:1.2em;">
+		      		<div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_newGroup"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title lang"  style="font-size:1.2em;color:#444;" data-lang="new_group">Create new group:</h4>
+		      		</div>
+		      		<div class="modal-body">
+
+						<input id="newcgroupname" type="text" class="lang" data-lang="group_name_ph" data-lang-to="placeholder" placeholder="new group's name" style="width:100%;text-align:center;font-size:1.2em;"/>
+
+					</div>
+		  			<div class="modal-footer">
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+						<button type="button" class="btn btn-primary lang" id="NewGroup_P" onclick="CreateNewGroup();" style="font-size:1.2em;" data-lang="create">Create</button>
+		  			</div>
+				</div>
+		  	</div>
+		</div>
+
+		<a href="#" id="open_select_lang" data-toggle="modal" data-target="#selectLang" data-backdrop="static" style="display:none;"></a>
+		<div class="modal" id="selectLang" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document" >
+		    	<div class="modal-content" style="font-size:1.2em;">
+		      		<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_selLang"><span aria-hidden="true">&times;</span></button>
+						<h6 class="modal-title"  style="font-size:1.2em;color:#444;" >
+							<span>Preferred language.</span>
+							<span>Bevorzugte Sprache.</span>
+							<span>Предпочитаемый язык.</span>
+							<span>Улюблена мова.</li>
+						</h6>
+		      		</div>
+		      		<div class="modal-body">
+
+						<select id="selectedLang"  style="text-align:center;font-size:1.2em;">
+							<option value="en" selected>English</option>
+							<option value="de">Deutsch</option>
+							<option value="ru">Русский</option>
+							<option value="ua">Українська</option>
+						</select>
+
+					</div>
+	      			<div class="modal-footer">
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+						<button type="button" class="btn btn-primary lang" id="selectLangBut" onclick="SelectLang();$('#close_selLang').click();" style="font-size:1.2em;" data-lang="set">Set</button>
+	      			</div>
+	    		</div>
+		  	</div>
+		</div>
+
+
+		<div class="modal fade" id="addChannel" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document">
+		    	<div class="modal-content" style="font-size:1.2em;">
+		      		<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_newChannel"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title lang"  style="font-size:1.2em;color:#444;" data-lang="new_channel">Create or subscribe new channel:</h4>
+		      		</div>
+		      		<div class="modal-body">
+
+						<input id="newchannelname" type="text" data-provide="typeahead" class="lang" data-lang="group_channel_ph" data-lang-to="placeholder" placeholder="new channels's name" style="width:100%;text-align:center;font-size:1.2em;"/>
+
+					</div>
+	      			<div class="modal-footer">
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+						<button type="button" class="btn btn-primary lang" id="NewChannel_P" onclick="AddChannel();" style="font-size:1.2em;" data-lang="create">Create</button>
+	      			</div>
+	    		</div>
+		  	</div>
+		</div>
+
+
+		<div class="modal fade" id="answer" tabindex="-1" role="dialog" >
+			<div class="modal-dialog" role="document">
+		    	<div class="modal-content" style="font-size:1.2em;">
+		      		<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_answer"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title lang"  style="font-size:1.2em;color:#444;" data-lang="new_answer">Answer:</h4>
+		      		</div>
+		      		<div class="modal-body">
+
+						<textarea id="newanswer" class="form-control" style="width:100%;font-size:1.2em;" rows="3"></textarea>
+
+					</div>
+	      			<div class="modal-footer">
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+						<button type="button" class="btn btn-primary lang" id="NewAnswerB" onclick="SendAnswer();" style="font-size:1.2em;" data-lang="send">Send</a>
+	      			</div>
+	    		</div>
+		  	</div>
+		</div>
+
+
+
+
+
+
+	</div>
+
+
+	<div id="context_repost" class="context" hidden>
+	  <!--<div class="context_hr"></div>-->
+	  <div class="context_item">
+	    <div class="inner_item"> Share </div>
+	  </div>
+	  <div class="context_item">
+	    <div class="inner_item"> Save </div>
+	  </div>
+	</div>
+
+	<div id="context_answer" class="context" hidden>
+	  <!--<div class="context_hr"></div>-->
+	  <div class="context_item">
+	    <div class="inner_item"><a data-toggle="modal" data-target="#answer">  Answer </a></div>
+	  </div>
+	  <div class="context_item">
+	    <div class="inner_item"> Save </div>
+	  </div>
+	</div>
+
+	<div id="context_delete" class="context" hidden>
+	  <!--<div class="context_hr"></div>-->
+	  <div class="context_item">
+	    <div class="inner_item"> Delete </div>
+	  </div>
+	  <div class="context_item">
+	    <div class="inner_item"> Save </div>
+	  </div>
+	</div>
+
+
+
+	<!-- overlay at start -->
+	<div id="startOverlay" style="display:block; position:absolute; top:0px; left:0px; width:100%; height:100%;z-index:9999999;"></div>
+
+
+
+
+<script src="js/json2.js"></script>
+
+<script src="js/multiselect/js/jquery.multi-select.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var mobile = true;//Modernizr.touch/* && document.location.host.toString().indexOf("0.0.1")<0*/;
+
+	if(mobile){
+		document.writeln("\<script type=\"text\/javascript\" src=\"cordova.js\" \>\<\/script\>");
+		document.writeln("\<script type=\"text\/javascript\" src=\"jxcore.js\" \>\<\/script\>");
+	}
+	else{
+		document.writeln("\<script type=\"text\/javascript\" src=\"\/\/"+document.location.hostname+":"+(parseInt(document.location.port))+"\/socket.io\/socket.io.js\" \>\<\/script\>");
+	}
+</script>
+<script type="text/javascript" charset="utf-8" src="js/qr/qrcode.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/console-log-div.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jasny-bootstrap.min.js"></script>
+<script src="js/RTCMultiConnection.js"></script>
+<script src="js/bootstrap3-typeahead.min.js"></script>
+<!--<script src="js/jquery.mobile.simpledialog2.min.js"></script>-->
+
+<script type="text/javascript">
+$(window).resize(function(){
+	updateLayout();
+	//<!--<%= src.replace(/'/,'`') %>-->
+});
+
+function updateLayout(){
+	$("#ChatMsgs_P").css("height",$(window).height()-$("#chatmsginput_P").height()-100);
+	$(".ChatMsgs_P-list").css("max-height",$(window).height()-$("#chatmsginput_P").height()-100);
+	$("#ChatsPeers_P").css("max-height",$(window).height()-50);
+
+	$("#GroupMsgs_P").css("height",$(window).height()-$("#GroupsTabchatmsginput_P").height()-100);
+	$(".GroupMsgs_P-list").css("max-height",$(window).height()-$("#GroupsTabchatmsginput_P").height()-100);
+	$("#GroupMsgs_P").css("max-height",$(window).height()-50);
+
+	$("#ChannelMsgs_P, #MyChannelMsgs_P").css("height",$(window).height()-$("#ChannelsTabchatmsginput_P").height()-100);
+	$(".ChannelMsgs_P-list").css("max-height",$(window).height()-$("#ChannelsTabchatmsginput_P").height()-100);
+	$("#ChannelMsgs_P, #MyChannelMsgs_P").css("max-height",$(window).height()-50);
+
+	$(".repostable").on("tap", function(e) {
+	    e.preventDefault();
+	    $("#context_repost")
+		.show()
+		.css({top: e.pageY, left: e.pageX});
+		var msg=$(e.currentTarget);
+		context_msg={
+			ts: msg.data("msgts"),
+			txt: msg.data("msgtxt"),
+			chid: msg.data("msgchid"),
+			chname: msg.data("msgchname"),
+			mid: msg.data("msgid"),
+			key: msg.data("msgkey")
+		}
+	});
+	$(".answerable").on("tap", function(e) {
+	    e.preventDefault();
+	    $("#context_answer")
+		.show()
+		.css({top: e.pageY, left: e.pageX});
+		var msg=$(e.currentTarget);
+		context_msg={
+			a2a: (parseInt(msg.data("msga2a"))>0)?true:false,
+			ts: msg.data("msgts"),
+			txt: msg.data("msgtxt"),
+			chid: msg.data("msgchid"),
+			chname: msg.data("msgchname"),
+			mid: msg.data("msgid"),
+			key: msg.data("msgkey")
+		}
+	});
+	$(".deletable").on("tap", function(e) {
+	    e.preventDefault();
+	    $("#context_delete")
+		.show()
+		.css({top: e.pageY, left: e.pageX});
+		var msg=$(e.currentTarget);
+		context_msg={
+			ts: msg.data("msgts"),
+			txt: msg.data("msgtxt"),
+			chid: msg.data("msgchid"),
+			chname: msg.data("msgchname"),
+			mid: msg.data("msgid"),
+			key: msg.data("msgkey")
+		}
+	});
+
+};
+
+$(document).click(function() {
+	if ($("#context_repost").css("display")!="none") $("#context_repost").fadeOut("fast");
+	if ($("#context_answer").css("display")!="none") $("#context_answer").fadeOut("fast");
+	if ($("#context_delete").css("display")!="none") $("#context_delete").fadeOut("fast");
+
+});
+
+function SendAnswer(){
+	var curchid=Main.channel.id;
+	for(var i in Main.chs)
+	{
+		if(Main.chs[i].id==curchid)
+		{
+			if(!Main.chs[i].msgs)Main.chs[i].msgs=[];
+			for(var k=0; k<Main.chs[i].msgs.length; k++){
+				if(context_msg.mid==Main.chs[i].msgs[k].mid){
+					if(!Main.chs[i].answs)Main.chs[i].answs=[];
+					var enckey=pki.publicKeyFromPem(context_msg.key);
+					var encryptedmsg = Base64.encode( enckey.encrypt(Base64.encode( $("#newanswer").val()), 'RSA-OAEP', {
+						    md: forge.md.sha512.create()
+						})
+					);
+					if(!context_msg.a2a)Main.chs[i].msgs.push({answerable:1, id:Main.chs[i].id, name: Main.chs[i].name,txt:context_msg.txt, ts:context_msg.ts,mid:context_msg.mid,my:1, nick:context_msg.key.substr(30,8)});
+					Main.chs[i].answs.push({nick:"Me", answerable:0, id:Main.chs[i].id, name: Main.chs[i].name,txt:$("#newanswer").val(), ts:Date.now(),mid:context_msg.mid,my:1});
+					Broadcast2All("channelmsg",{id:curchid, name:Main.channel.name, txt:encryptedmsg,mid:context_msg.mid, key:Main.profile.publicKey});
+					setTimeout(function(){
+						SelectChannel(curchid);
+						$("#ChannelsTabchatmsginput_P").val('');
+					},100);
+					$("#close_answer").click();
+					break;
+				};
+			};
+			Main.$set("chs", Main.chs);
+			setTimeout(function(){
+				updateLayout();
+				var h=0;
+				$.each($("#ChannelMsgs_P-list  div"),function(i,v){h+=$(v).height()});
+				$("#ChannelMsgs_P-list").scrollTop(h+2000);
+			},300);
+			break;
+		};
+	};
+
+};
+
+</script>
+
+
+<script src="js/vue.min.js"></script>
+<script src="js/forge.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/index.js"></script>
+
+</body>
+
+</html>

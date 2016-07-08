@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.zeipt.mycely" version="0.032" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Mycely</name>
+    <description>
+        P2P messaging
+    </description>
+    <author email="zeipt@tuta.io" href="https://twitter.com/MycelyPro">
+        Zeipt
+    </author>
+    <plugin name="cordova-plugin-whitelist" version="1" />
+    <content src="index.html" />
+    <allow-navigation href="*" />
+    <access origin="*" />
+    <allow-intent href="thtp://*/*" />
+    <allow-intent href="http://*/*" />
+    <preference name="installLocation" value="auto" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="AndroidLaunchMode" value="singleTask" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="xwalkVersion" value="18+" />
+    <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
+    <preference name="xwalkMode" value="embedded" />
+    <preference name="xwalkMultipleApk" value="true" />
+
+</widget>
