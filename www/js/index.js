@@ -1,4 +1,4 @@
-var currentver = "0.034";
+var currentver = "0.035";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -1138,13 +1138,16 @@ function ProcessCmdFromTH(destination,packet,cb)
 							if(Main.peers[i].destination==destination){
 								Main.peers[i].lts=Date.now();
 								for(var j in Main.peers[i].msgs){
-									if(Main.peers[i].msgs[j].txt == packet.data){
-										Main.peers[i].msgs[j].dlvrd=true;
+									if(Main.peers[i].msgs[j].txt == packet.data &&
+                                        Main.peers[i].msgs[j].dlvrd != true
+                                    ){
+										Main.peers[i].msgs[j].dlvrd = true;
+                                        delivery_notify.play();
+        								Main.peers.sort(SortObjectsByLTS);
 										break;
 									};
 								};
-								delivery_notify.play();
-								Main.peers.sort(SortObjectsByLTS);
+
 								break;
 							};
 						};
@@ -1171,40 +1174,50 @@ function ProcessCmdFromTH(destination,packet,cb)
 							{
 								//if(!dontForceForeground)cordova.backgroundapp.show();
 								Main.peers[i].lts=Date.now();
-								if(Main.peers[i].msgs && Main.peers[i].msgs.length==0)AskPeerForHistory(destination);
-								if(!Main.peers[i].msgs){
+                                if(!Main.peers[i].msgs){
                                     Main.peers[i].msgs = [];
                                 }
-                                Main.peers[i].msgs.push({nick:Main.peers[i].nick, txt:packet.data, ts:Date.now(),destination:destination});
-								if(!current_chat_dest || current_chat_dest!=destination){
-									if(!Main.peers[i].newmsgcnt)Main.peers[i].newmsgcnt=1;
-									else Main.peers[i].newmsgcnt++;
+                                if(Main.peers[i].msgs.length==0)AskPeerForHistory(destination);
 
-									$(".newmsgcnttop").css("display","none");
-									$(".newmsgcnt.c"+Main.peers[i].destination).html(Main.peers[i].newmsgcnt);
-									$(".newmsgcnt.c"+Main.peers[i].destination).css("display","inline-block");
-									$(".newmsgcnttop.c"+Main.peers[i].destination).css("display","block");
-									Update_chatscnt_P();
-								}
-								else
-								{
-									console.log("inBG="+inBG)
-									if(inBG){
-										if(!Main.peers[i].newmsgcnt)Main.peers[i].newmsgcnt=1;
-										else Main.peers[i].newmsgcnt++;
-									}
+                                var exist = false;
+                                for(j=0; j < Main.peers[i].msgs.length; j++ ){
+                                    if(Main.peers[i].msgs[j].txt == packet.data){
+                                        exist = true;
+                                    }
+                                };
 
-									setTimeout(function(){
-										Update_chatscnt_P();
-										updateLayout();
-										var h=0;
-										$.each($("#ChatMsgs_P-list  div"),function(i,v){h+=$(v).height()});
-										$("#ChatMsgs_P-list").scrollTop(h+2000);
-									},300);
-								};
-								Main.peers.sort(SortObjectsByLTS);
-								th_SendData2Dest(destination,{cmd:"newchatmsgack",data:packet.data});
-								msg_notify.play();
+                                if(!exist){
+    								Main.peers[i].msgs.push({nick:Main.peers[i].nick, txt:packet.data, ts:Date.now(),destination:destination});
+    								if(!current_chat_dest || current_chat_dest!=destination){
+    									if(!Main.peers[i].newmsgcnt)Main.peers[i].newmsgcnt=1;
+    									else Main.peers[i].newmsgcnt++;
+
+    									$(".newmsgcnttop").css("display","none");
+    									$(".newmsgcnt.c"+Main.peers[i].destination).html(Main.peers[i].newmsgcnt);
+    									$(".newmsgcnt.c"+Main.peers[i].destination).css("display","inline-block");
+    									$(".newmsgcnttop.c"+Main.peers[i].destination).css("display","block");
+    									Update_chatscnt_P();
+    								}
+    								else
+    								{
+    									console.log("inBG="+inBG)
+    									if(inBG){
+    										if(!Main.peers[i].newmsgcnt)Main.peers[i].newmsgcnt=1;
+    										else Main.peers[i].newmsgcnt++;
+    									}
+
+    									setTimeout(function(){
+    										Update_chatscnt_P();
+    										updateLayout();
+    										var h=0;
+    										$.each($("#ChatMsgs_P-list  div"),function(i,v){h+=$(v).height()});
+    										$("#ChatMsgs_P-list").scrollTop(h+2000);
+    									},300);
+    								};
+    								Main.peers.sort(SortObjectsByLTS);
+    								th_SendData2Dest(destination,{cmd:"newchatmsgack",data:packet.data});
+    								msg_notify.play();
+                                };
 
 								break;
 							};

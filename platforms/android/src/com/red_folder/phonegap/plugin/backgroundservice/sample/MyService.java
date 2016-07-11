@@ -147,33 +147,13 @@ public class MyService extends BackgroundService {
 		Context context = getApplicationContext();
 		CharSequence contentTitle = "Mycely";
 		CharSequence contentText = "Attention required!";
-		Intent notificationIntent = new Intent(this, com.zeipt.mycely.MainActivity/*com.red_folder.phonegap.plugin.backgroundservice.BackgroundService*/.class);
+		Intent notificationIntent = new Intent(this, com.zeipt.mycely.MainActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
 
 		//int SERVER_DATA_RECEIVED = 1;
 		notificationManager.notify(1, notification);
-/*
-	NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-	  @SuppressWarnings("deprecation")
-	  Notification notification = new Notification(R.drawable.icon,
-	    "Attention required", System.currentTimeMillis());
 
-	   Intent notificationIntent = new Intent(this, MainActivity.class);
-	  PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-	    notificationIntent, 0);
-
-	  // notification.setLatestEventInfo(MainActivity.this, "Mycely",
-	    //"Attention required", pendingIntent);
-
-        notification.defaults |= Notification.DEFAULT_LIGHTS;
-        notification.defaults |= Notification.DEFAULT_SOUND;
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
-        //notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.ledARGB = Color.MAGENTA;
-
-	  notificationManager.notify(9999, notification);
-*/
     }
 
 	@Override

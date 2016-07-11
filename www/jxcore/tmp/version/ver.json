@@ -1,4 +1,4 @@
 {
-  "app":"0.034",
-  "changes": "custom notification sound"
+  "app":"0.035",
+  "changes": "fixed doubling private autodelivered msgs showing"
 }

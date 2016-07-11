@@ -1413,7 +1413,7 @@ function packetHandler(err, packet, chan, callback){
 					};
 				    }
 				};
-			},30000);
+			},10000);
 		};
 		if(defined(th_clients[chan.hashname])){
 			delete(th_clients[chan.hashname]);
@@ -1460,7 +1460,7 @@ function packetHandler(err, packet, chan, callback){
                 });
             }
         },1000);
-        
+
     };
 
 	callback(true);
