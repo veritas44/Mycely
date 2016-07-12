@@ -171,6 +171,20 @@ public class MyService extends BackgroundService {
 	            wfl.acquire();
 	        }
 
+			/*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			    //WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+			    List<WifiConfiguration> networks = wm.getConfiguredNetworks();
+			    Iterator<WifiConfiguration> iterator = networks.iterator();
+			    while (iterator.hasNext()) {
+			        WifiConfiguration wifiConfig = iterator.next();
+			        if (wifiConfig.SSID.replace("\"", "").equals(wc.SSID.replace("\"", "")))
+			            wm.enableNetwork(wifiConfig.networkId, true);
+			        else
+			            wm.disableNetwork(wifiConfig.networkId);
+			    }
+			    wm.reconnect();
+			}*/
+
 			// Start checking if internet is enabled
             /*boolean hasInternet = false;
             long endTime = System.currentTimeMillis() + 55 * 1000;

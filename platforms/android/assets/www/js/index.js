@@ -1,4 +1,4 @@
-var currentver = "0.035";
+var currentver = "0.036";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -51,7 +51,16 @@ function SortObjectsByLTS(a, b) {
   // a must be equal to b
   return 0;
 }
-
+function SortObjectsBySentTS(a, b) {
+  if (a.sent < b.sent) {
+    return 1;
+  }
+  if (a.sent > b.sent) {
+    return -1;
+  }
+  // a must be equal to b
+  return 0;
+}
 
 //function d2h(d) {return d.toString(16);}
 //function h2d(h) {return parseInt(h,16);}
@@ -660,13 +669,17 @@ $("#chatmsginput_P").keypress(function (e) {
 	var code = (e.keyCode ? e.keyCode : e.which);
 	if (code == 13 && !(e.Shift || e.shiftKey) && $("#chatmsginput_P").val().length>0) {
 		var curdest=Main.chat.dest;
+        if(!online){
+            alert(localize.get('no_inet_warn'));
+            return false;
+        };
 		for(var i in Main.peers)
 		{
 			if(Main.peers[i].destination==curdest){
 				Main.peers[i].lts=Date.now();
 				if(!Main.peers[i].msgs)Main.peers[i].msgs=[];
-				Main.peers[i].msgs.push({nick:Main.profile.nick,destination:Main.profile.destination,txt:$("#chatmsginput_P").val(),ts: Date.now(),dlvrd:false});
-				th_SendData2Dest(curdest,{	cmd:"newchatmsg",data: $("#chatmsginput_P").val()});
+				Main.peers[i].msgs.push({nick:Main.profile.nick,destination:Main.profile.destination,txt:$("#chatmsginput_P").val(),sent: Date.now(),ts: Date.now(),dlvrd:false});
+				th_SendData2Dest(curdest,{	cmd:"newchatmsg",data: {txt: $("#chatmsginput_P").val(), sent: Date.now() } });
 				setTimeout(function(){
 					SelectPeerForChat(curdest);
 					$("#chatmsginput_P").val('');
@@ -869,9 +882,12 @@ function onDataFromBackend(d){
 											else console.log(data);
 											break;
                     case 'alarmGo2Foreground':
-											if(!dontForceForeground)cordova.backgroundapp.show();
-											break;
-					case 'updateProfile':
+                        					if(!dontForceForeground)cordova.backgroundapp.show();
+                        					break;
+                    case 'noInternet':
+                                            alert(localize.get('no_inet_warn'));
+                                            break;
+                    case 'updateProfile':
 											//console.log(data.profile);
 											Main.$set("profile",data.profile);
 											if(!data.profile.os){
@@ -958,6 +974,7 @@ function onDataFromBackend(d){
 					case 'thonline':
 											$("#menubut").attr("src","img/menu_3.png");
                                             thonline = true;
+                                            online = true;
                                             break;
 
 					case 'keysReady':
@@ -1179,15 +1196,32 @@ function ProcessCmdFromTH(destination,packet,cb)
                                 }
                                 if(Main.peers[i].msgs.length==0)AskPeerForHistory(destination);
 
+                                var withSent = false;
+                                if(typeof(packet.data)=='object')withSent = true;
+
                                 var exist = false;
                                 for(j=0; j < Main.peers[i].msgs.length; j++ ){
-                                    if(Main.peers[i].msgs[j].txt == packet.data){
-                                        exist = true;
+                                    if(withSent){
+                                        if(Main.peers[i].msgs[j].txt == packet.data.txt){
+                                            exist = true;
+                                        }
+                                    }
+                                    else{
+                                        if(Main.peers[i].msgs[j].txt == packet.data){
+                                            exist = true;
+                                        }
                                     }
                                 };
 
                                 if(!exist){
-    								Main.peers[i].msgs.push({nick:Main.peers[i].nick, txt:packet.data, ts:Date.now(),destination:destination});
+                                    if(withSent){
+                                        Main.peers[i].msgs.push({nick:Main.peers[i].nick, txt:packet.data.txt, sent: packet.data.sent, ts:Date.now(),destination:destination});
+                                    }
+                                    else{
+                                        Main.peers[i].msgs.push({nick:Main.peers[i].nick, txt:packet.data.txt, sent: Date.now(), ts:Date.now(),destination:destination});
+                                    }
+                                    //Main.peers[i].msgs.sort(SortObjectsBySentTS);
+
     								if(!current_chat_dest || current_chat_dest!=destination){
     									if(!Main.peers[i].newmsgcnt)Main.peers[i].newmsgcnt=1;
     									else Main.peers[i].newmsgcnt++;
@@ -1669,6 +1703,10 @@ function ProcessCmdFromTH(destination,packet,cb)
 							$input.typeahead({source:known_channels, autoSelect: true});
 						};
 						break;
+                case 'noInternet':
+                        alert(localize.get('no_inet_warn'));
+                        break;
+
 				default:
 						console.log(packet);
 						break;
@@ -1867,7 +1905,8 @@ var localize={
             gen_otc: "Gen OTC",
             peer_otc_ph: "Peer's OTC",
             your_otc: "Tell your friend this your One-Time-Code: ",
-            only_lat_please: "Only latin symbols and digits, please."
+            only_lat_please: "Only latin symbols and digits, please.",
+            no_inet_warn: "No Internet connection."
 		},
 		'de': {
             lang: 'Sprache',
@@ -1945,7 +1984,8 @@ var localize={
             gen_otc: "Gen OTC",
             peer_otc_ph: "Peer's OTC",
             your_otc: "Tell your friend this your One-Time-Code: ",
-            only_lat_please: "Only latin symbols and digits, please."
+            only_lat_please: "Only latin symbols and digits, please.",
+            no_inet_warn: "No Internet connection."
 		},
 		'ru': {
 			lang: 'Язык',
@@ -2023,7 +2063,8 @@ var localize={
             gen_otc: "Сгенерировать<br>OTC",
             peer_otc_ph: "OTC Пира",
             your_otc: "Сообщите другу Ваш OTC: ",
-            only_lat_please: "Только латинские буквы и цифры, пожалуйста."
+            only_lat_please: "Только латинские буквы и цифры, пожалуйста.",
+            no_inet_warn: "Нет подключения к Интернету."
 
 		},
 		'ua': {
@@ -2102,7 +2143,8 @@ var localize={
             gen_otc: "Згенеруйте<br>OTC",
             peer_otc_ph: "OTC Пиру",
             your_otc: "Сообщите другу Ваш OTC: ",
-            only_lat_please: "Тільки латинські букви і цифри, будь ласка."
+            only_lat_please: "Тільки латинські букви і цифри, будь ласка.",
+            no_inet_warn: "Немає підключення до Інтернету."
 		}
 	},
 	/* DO NOT CHANGE UNDER THIS */

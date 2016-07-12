@@ -1,4 +1,4 @@
 {
-  "app":"0.035",
-  "changes": "fixed doubling private autodelivered msgs showing"
+  "app":"0.036",
+  "changes": "CRITICAL!!! Reinit th on online event and changed struct of private msg."
 }

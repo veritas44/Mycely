@@ -807,8 +807,23 @@ function ProcessCmdFromUI(cmd,data){
 								break;
 		case 'Online':
 								console.log("########################### Online ##################################");
+                                th=null;
+								for(var i in require.cache){
+									if(require.cache[i] && require.cache[i].id){
+										console.log(require.cache[i].id.toString());
+										if(require.cache[i].id.toString().indexOf("telehash")>0){
+											console.log("clearing cached require "+i);
+											delete(require.cache[i]);
+										}
+									};
+								}
+								th = require("telehash");
+								if(dbsinited/* && !thinited*/){
+								    StartTH();
+								};
 								online=true;
-								if(dbsinited && thinited)Send2UI("thonline",{msg:"online..."});//shared.set("online", "true");
+								//if(dbsinited)Send2UI("thonline",{});
+								//if(dbsinited && thinited)Send2UI("thonline",{msg:"online..."});//shared.set("online", "true");
 								break;
 		case 'Offline':
 								console.log("########################### Offline ####################################");
@@ -1256,7 +1271,7 @@ function checkUpdate(){
         };
 	});
 };
-setInterval(function(){checkUpdate();}, 3600000);
+setInterval(function(){checkUpdate();}, 60000*30);
 
 
 
@@ -1380,14 +1395,13 @@ function packetHandler(err, packet, chan, callback){
 		}
 		if(err.toString()=="timeout"){
 
-			    for(i in peers){
-				    if(chan && chan.hashname && peers[i].destination==chan.hashname){
-					for(var j = 0; j < undelivered.length; j++) {
-					    //console.log("undelivered "+j+" "+undelivered[j].cmd+" "+undelivered[j].data);
-					    if(peers[i].destination==undelivered[j].destination)
-					    {
+			for(i in peers){
+			    if(chan && chan.hashname && peers[i].destination==chan.hashname){
+    				for(var j = 0; j < undelivered.length; j++) {
+    				    //console.log("undelivered "+j+" "+undelivered[j].cmd+" "+undelivered[j].data);
+    				    if(peers[i].destination==undelivered[j].destination)
+    				    {
                             //console.log("undelivered "+j+" "+undelivered[j].notified);
-
 					        if(!undelivered[j].notified) {
                                 //console.log("sending kickPeer");
                                 undelivered[j].notified = true;
@@ -1396,21 +1410,21 @@ function packetHandler(err, packet, chan, callback){
                 			break;
 					    }
 					};
-				    }
-				};
+			    }
+			};
 
             setTimeout(function(){
 			    for(i in peers){
 				    if(chan && chan.hashname && peers[i].destination==chan.hashname){
-					for(var j = 0; j < undelivered.length; j++) {
-					    //console.log("undelivered "+j+" "+undelivered[j].data.cmd+" "+undelivered[j].data.data+" ");
-					    if(peers[i].destination==undelivered[j].destination)
-					    {
+    					for(var j = 0; j < undelivered.length; j++) {
+    					    //console.log("undelivered "+j+" "+undelivered[j].data.cmd+" "+undelivered[j].data.data+" ");
+    					    if(peers[i].destination==undelivered[j].destination)
+    					    {
 
-					        th_SendData2Dest(peers[i].destination,{cmd:undelivered[j].cmd, data:undelivered[j].data});
-                            break;
-					    }
-					};
+    					        th_SendData2Dest(peers[i].destination,{cmd:undelivered[j].cmd, data:undelivered[j].data});
+                                break;
+    					    }
+    					};
 				    }
 				};
 			},10000);
@@ -1498,7 +1512,12 @@ function th_SendData2Dest(hashname,q){
 	//console.log("th_SendData2Dest "+hashname+" "+JSON.stringify(q));
 	if(defined(th_clients[hashname]) && defined(th_clients[hashname].chan))
 	{
-		th_clients[hashname].chan.send({js:q});
+        try{
+            th_clients[hashname].chan.send({js:q});
+        }catch(err){
+			console.log("#########0 " + err.toString()+" "+hashname);
+            onThSendingError(hashname,q);
+		}
 	}
 	else
 	{
@@ -1506,11 +1525,28 @@ function th_SendData2Dest(hashname,q){
 			gth.start(hashname, GCHANNELNAME, {	js: q }, packetHandler);
 		}catch(err){
 			console.log("#########0 " + err.toString()+" "+hashname);
+            onThSendingError(hashname,q);
 		}
 	};
 };
 
+function onThSendingError(hashname,q){
+    Mobile.getConnectionStatus(function(err, status) {
+        if (status.NotConnected){
+            Send2UI("noInternet",{});
+        }
 
+        setTimeout(function(){
+            th_SendData2Dest(hashname, q);
+        },10000);
+        /*else if (status.WiFi){
+            console.log("WiFi");
+        }
+        else if (status.WWAN){
+            console.log("Mobile Connection");
+        }*/
+    });
+}
 
 
 
