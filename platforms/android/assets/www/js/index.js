@@ -1,4 +1,4 @@
-var currentver = "0.037";
+var currentver = "0.038";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -136,7 +136,10 @@ function jxcore_ready() {
 
     		Main.profile.os=platform;
     		Main.profile.ver=parseFloat(device.version);
+            console.log("Main.profile.ver="+Main.profile.ver);
     		Main.$set("android_ver",Main.profile.ver);
+            console.log("Main.android_ver="+Main.android_ver);
+
     		if(!isIos){
     			//#android
     			msg_notify=new Audio();
@@ -183,7 +186,7 @@ function jxcore_ready() {
 	});
 	getQueue=jxcore("getQueue");
 	setInterval(function(){getQueueF();},200);
-
+    //BrowserPolicy.content.allowOriginForAll('blob:');
 };
 var getQueue;
 function getQueueF(){
@@ -888,7 +891,7 @@ function onDataFromBackend(d){
                                             alert(localize.get('no_inet_warn'));
                                             break;
                     case 'updateProfile':
-											//console.log(data.profile);
+											//console.log("updateProfile"+JSON.stringify(data.profile));
 											Main.$set("profile",data.profile);
 											if(!data.profile.os){
 												var p={};
@@ -898,7 +901,8 @@ function onDataFromBackend(d){
 												p.ver=parseFloat(device.version);
 												add2dbp(p,"my_profile");
 												Main.$set("profile",p);
-
+                                                console.log("Main.profile.ver="+Main.profile.ver);
+                                                console.log("Main.android_ver="+Main.android_ver);
 												for(i in Main.peers){
 													th_SendData2Dest(Main.peers[i].destination,{cmd:"updateMyProfile",data:p});
 												};
@@ -927,6 +931,8 @@ function onDataFromBackend(d){
 											Main.peers.sort(SortObjectsByLTS);
 											break;
 					case 'peers':
+                                            console.log("peers "+JSON.stringify(data.data));
+
 											for(i in data.data){
 												if(!defined(data.data[i].msgs))data.data[i].msgs=[];
 												for(j in Main.peers){
@@ -938,6 +944,8 @@ function onDataFromBackend(d){
 											}
 											data.data.sort(SortObjectsByLTS);
 											Main.$set("peers",data.data);
+                                            console.log("Main.peers "+JSON.stringify(Main.peers));
+
 											setTimeout(function(){$(".newmsgcnttop").css("display","none");},100);
 											break;
 					case 'groups':
@@ -1558,7 +1566,7 @@ function ProcessCmdFromTH(destination,packet,cb)
 						};
 						break;
 				case 'calling':
-						if(Main.android_ver > 4.1 && !before_or_in_call){
+						if(/*Main.android_ver > 4.1 &&*/ !before_or_in_call){
 							//if(mobile)cordova.backgroundapp.show();
 							document.getElementById('open-room').onclick = function() {
 								participants.join({
@@ -1588,7 +1596,7 @@ function ProcessCmdFromTH(destination,packet,cb)
 							before_or_in_call=true;
 							setTimeout(function(){waitForCallAccept();},500);
 						}
-						else if(Main.android_ver > 4.1)
+						else if(true/*Main.android_ver > 4.1*/)
 						{
 							th_SendData2Dest(destination,{cmd:"busy",data:{}});
 						}
@@ -2261,7 +2269,7 @@ var Main=new Vue({
 
   data: {
 		android_ver:0,
-		profile:{nick:"",destination:"",os:"",ver:"",publicKey:"",privateKey:""},
+		profile:{nick:"",destination:"",os:"",ver:0,publicKey:"",privateKey:""},
 		peers:[],
 		groups:[],
 		chs:[],
@@ -2317,6 +2325,12 @@ function SelectPeerForChat(dest){
 			Main.chat.msgs=Main.peers[i].msgs;
 			Main.chat.nick=Main.peers[i].nick;
 			Main.chat.android_ver=Main.peers[i].ver;
+            console.log("Main.profile.ver="+Main.profile.ver);
+            console.log("Main.android_ver="+Main.android_ver);
+
+            console.log("Main.chat.android_ver "+Main.chat.android_ver);
+            console.log("Main.peers[i].ver "+Main.peers[i].ver);
+            console.log(parseFloat(device.version));
 			Main.peers[i].newmsgcnt=0;
 			$(".newmsgcnttop.c"+Main.peers[i].destination).css("display","none");
             if(!Main.peers[i].msgs) Main.peers[i].msgs = [];
