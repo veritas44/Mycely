@@ -237,10 +237,10 @@ public class JXMobile {
       @SuppressLint("NewApi")
       @Override
       public void Receiver(ArrayList<Object> params, String callbackId) {
-	Log.e("jxcore", "Method Notify!: ");
-	if(!isBackgroundRunning(jxcore.activity.getBaseContext())){
-			Notify(jxcore.activity.getBaseContext());
-	};
+          Log.e("jxcore", "Method Notify!: ");
+          //if(!isBackgroundRunning(jxcore.activity.getBaseContext())){
+              Notify(jxcore.activity.getBaseContext());
+          //};
 
       }
     });

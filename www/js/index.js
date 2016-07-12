@@ -1,4 +1,4 @@
-var currentver = "0.039";
+var currentver = "0.040";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -260,7 +260,7 @@ var app = {
 			};
 			Update_groupscnt_P();
 			Update_chatscnt_P();
-
+            Send2Backend('Resume', {});
 
 		}, false);
 
@@ -311,6 +311,7 @@ var app = {
 		setTimeout(function(){dontForceForeground=false;},5000);
 
         myService.enableTimer(60000, function(r){}, function(e){handleError(e)});
+        Send2Backend('Pause', {});
 		//updateTotalNewMsgsCnt(false);
     },
     onBackKeyDown: function() {

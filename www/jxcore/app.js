@@ -62,6 +62,8 @@ var thinited=false;
 var dbsinited=false;
 var update_path="";
 
+var paused = false;
+
 var seeds=[{
     "paths": [
 	{
@@ -830,6 +832,12 @@ function ProcessCmdFromUI(cmd,data){
 								online=false;
 								//thinited=false;
 								break;
+        case 'Pause':
+                                paused = true;
+                                break;
+        case 'Pause':
+                                paused = false;
+                                break;
 		case 'checkUpdate':
 								checkUpdate();
 								break;
@@ -1460,12 +1468,12 @@ function packetHandler(err, packet, chan, callback){
     }
 
     if(packet.js.cmd=="newchatmsg" || packet.js.cmd=="chatmsg2group" || packet.js.cmd=="addyou"){
-        frontAlive = false;
-        Mobile("isFrontAlive").call({q:"w"}, function(ret){
-            frontAlive = true;
-        });
-        setTimeout(function(){
-            if(!frontAlive){
+        //frontAlive = false;
+        //Mobile("isFrontAlive").call({q:"w"}, function(ret){
+        //    frontAlive = true;
+        //});
+        //setTimeout(function(){
+            if(paused/*!frontAlive*/){
                 Mobile.notify(function(err, location) {
                   if (err)
                     console.error("Error Notify", err);
@@ -1473,7 +1481,7 @@ function packetHandler(err, packet, chan, callback){
                     console.log("Notify");
                 });
             }
-        },1000);
+        //},1000);
 
     };
 
