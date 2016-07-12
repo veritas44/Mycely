@@ -1,4 +1,4 @@
-var currentver = "0.036";
+var currentver = "0.037";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -1155,7 +1155,7 @@ function ProcessCmdFromTH(destination,packet,cb)
 							if(Main.peers[i].destination==destination){
 								Main.peers[i].lts=Date.now();
 								for(var j in Main.peers[i].msgs){
-									if(Main.peers[i].msgs[j].txt == packet.data &&
+									if(Main.peers[i].msgs[j].txt == packet.data.txt &&
                                         Main.peers[i].msgs[j].dlvrd != true
                                     ){
 										Main.peers[i].msgs[j].dlvrd = true;
