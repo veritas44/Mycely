@@ -1,4 +1,4 @@
 {
-  "app":"0.038",
-  "changes": "experimental audio calls (>4.1)"
+  "app":"0.039",
+  "changes": "fixed CSP for experimental audio calls (>4.1)"
 }
