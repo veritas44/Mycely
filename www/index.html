@@ -201,6 +201,10 @@
         #my-select-button > span {display:none;}
         .ms-container {width: 100%;}
 
+        a.btn, a.btn:focus, a.btn:hover{
+            color:#14D2D2;
+        	background-color:#1e1e28;
+        }
 
         #console-log-text{
             position:absolute;
@@ -400,12 +404,16 @@
 				    	</div>
 					<div align="center">
 						<br>
-						<a class='btn btn-block darkblue lang' onclick="updateProfile();" style="font-size:1.2em;" data-lang="set">Set</a>
+						<a class='btn btn-block darkblue lang' onclick="updateProfile();" style="font-size:1.7em;width:70%;" data-lang="set">Set</a>
 					</div>
-					</br>
+					</br></br>
 					<div align="center" style="font-size:1.2em;" >
 						<a class="lang" data-lang="lang" onclick="$('#open_select_lang').click();" style="width:100%;font-size:1.2em;color:#565a67;">lang</a>
-				    	</div>
+				    </div>
+                    </br></br>
+                    <div align="center" style="font-size:1.2em;" >
+                        <a class='btn btn-block darkblue lang' onclick="GenerateQRForApk();" style="font-size:1.4em;width:70%;" data-lang="gen_qr_apk">Download </a>
+                    </div>
 				</template>
 				<h6 v-else>Your ID is not ready. Wait.</h6>
             </div>

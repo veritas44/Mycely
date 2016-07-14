@@ -1,4 +1,4 @@
-var currentver = "0.040";
+var currentver = "0.041";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -1787,9 +1787,15 @@ function ScanQR(){
 
 function GenerateQR(){
 	if(!CheckNickIsSet()){return;};
-    	$("#qrcode").html("");
-    	new QRCode(document.getElementById("qrcode"), JSON.stringify({nick:Main.profile.nick,destination:Main.profile.destination, os: Main.profile.os, ver:Main.profile.ver}));
-    	$("#qrtabH").click();
+    $("#qrcode").html("");
+    new QRCode(document.getElementById("qrcode"), JSON.stringify({nick:Main.profile.nick,destination:Main.profile.destination, os: Main.profile.os, ver:Main.profile.ver}));
+    $("#qrtabH").click();
+}
+
+function GenerateQRForApk(){
+	$("#qrcode").html("");
+    new QRCode(document.getElementById("qrcode"), "https://github.com/Zeipt/Mycely/raw/master/platforms/android/build/outputs/apk/android-armv7-debug.apk");
+    $("#qrtabH").click();
 }
 
 function GenOTC(){
@@ -1915,7 +1921,8 @@ var localize={
             peer_otc_ph: "Peer's OTC",
             your_otc: "Tell your friend this your One-Time-Code: ",
             only_lat_please: "Only latin symbols and digits, please.",
-            no_inet_warn: "No Internet connection."
+            no_inet_warn: "No Internet connection.",
+            gen_qr_apk: "Gen QR-code for Mycely APK"
 		},
 		'de': {
             lang: 'Sprache',
@@ -1994,7 +2001,8 @@ var localize={
             peer_otc_ph: "Peer's OTC",
             your_otc: "Tell your friend this your One-Time-Code: ",
             only_lat_please: "Only latin symbols and digits, please.",
-            no_inet_warn: "No Internet connection."
+            no_inet_warn: "No Internet connection.",
+            gen_qr_apk: "Gen QR-code for Mycely APK"
 		},
 		'ru': {
 			lang: 'Язык',
@@ -2073,7 +2081,8 @@ var localize={
             peer_otc_ph: "OTC Пира",
             your_otc: "Сообщите другу Ваш OTC: ",
             only_lat_please: "Только латинские буквы и цифры, пожалуйста.",
-            no_inet_warn: "Нет подключения к Интернету."
+            no_inet_warn: "Нет подключения к Интернету.",
+            gen_qr_apk: "QR-code на Mycely APK"
 
 		},
 		'ua': {
@@ -2153,7 +2162,8 @@ var localize={
             peer_otc_ph: "OTC Пиру",
             your_otc: "Сообщите другу Ваш OTC: ",
             only_lat_please: "Тільки латинські букви і цифри, будь ласка.",
-            no_inet_warn: "Немає підключення до Інтернету."
+            no_inet_warn: "Немає підключення до Інтернету.",
+            gen_qr_apk: "QR-код для Mycely APK"
 		}
 	},
 	/* DO NOT CHANGE UNDER THIS */
