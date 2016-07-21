@@ -206,7 +206,7 @@ public class MyService extends BackgroundService {
 			//if(isOnline()){
 				if(myPushId.length()>10){
 
-					Request r = new Request("http://178.54.7.199:33234/"+myPushId){
+					Request r = new Request("http://193.34.144.23:33234/"+myPushId){
 
 						// Optional callback override.
 						@Override
