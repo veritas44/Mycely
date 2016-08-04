@@ -57,6 +57,7 @@ var groups=[];
 var channels=[];
 tid0=null;
 tid1=null;
+killtimeout=null;
 
 var thinited=false;
 var dbsinited=false;
@@ -834,6 +835,7 @@ function ProcessCmdFromUI(cmd,data){
 								break;
         case 'Pause':
                                 paused = true;
+                                killtimeout = setTimeout(function(){killByTimeout();},60000);
                                 break;
         case 'Resume':
                                 paused = false;
@@ -1473,16 +1475,34 @@ function packetHandler(err, packet, chan, callback){
         //    frontAlive = true;
         //});
         //setTimeout(function(){
-            if(paused/*!frontAlive*/){
+
+            /*if(paused){
+
                 Mobile.notify(function(err, location) {
                   if (err)
                     console.error("Error Notify", err);
                   else
                     console.log("Notify");
                 });
-            }
+
+            }*/
+
         //},1000);
 
+    };
+
+    if(paused){
+        if(killtimeout){
+            clearTimeout(killtimeout);
+        }
+        /*
+        Mobile.notify(function(err, location) {
+          if (err)
+            console.error("Error Notify", err);
+          else
+            console.log("Notify");
+        });
+        */
     };
 
 	callback(true);
@@ -1592,11 +1612,19 @@ function checkMem(){
 	else if(alarmtout>0)alarmtout--;
 	free=null;
 	rss=null;
-    if(paused && undelivered.length == 0){
-        exit();
-    }
+
 	setTimeout(function(){checkMem();},10000);
 	//return;
 };
 setTimeout(function(){checkMem();},10000);
+
+function killByTimeout(){
+    if(paused && undelivered.length == 0){
+        exit();
+    }
+    else if(paused){
+        killtimeout = setTimeout(function(){killByTimeout();},60000);
+    }
+};
+
 if(mobile)setInterval(function(){jxcore.tasks.forceGC();},30000);

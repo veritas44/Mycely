@@ -1,4 +1,4 @@
 {
-  "app":"0.043",
-  "changes": "fix delivering"
+  "app":"0.044",
+  "changes": "fix app's autokill alg"
 }
