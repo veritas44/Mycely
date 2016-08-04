@@ -1,4 +1,4 @@
-var currentver = "0.042";
+var currentver = "0.043";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -1211,7 +1211,9 @@ function ProcessCmdFromTH(destination,packet,cb)
                                 var exist = false;
                                 for(j=0; j < Main.peers[i].msgs.length; j++ ){
                                     if(withSent){
-                                        if(Main.peers[i].msgs[j].txt == packet.data.txt){
+                                        if( Main.peers[i].msgs[j].txt == packet.data.txt &&
+                                            Main.peers[i].msgs[j].sent == packet.data.sent
+                                        ){
                                             exist = true;
                                         }
                                     }

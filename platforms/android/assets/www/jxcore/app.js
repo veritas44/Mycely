@@ -835,7 +835,7 @@ function ProcessCmdFromUI(cmd,data){
         case 'Pause':
                                 paused = true;
                                 break;
-        case 'Pause':
+        case 'Resume':
                                 paused = false;
                                 break;
 		case 'checkUpdate':
@@ -1498,13 +1498,18 @@ function packetHandler(err, packet, chan, callback){
 					//console.log(JSON.stringify(undelivered[i].data));
 					//console.log(JSON.stringify(packet.js.data));
 					if(	peers[j].destination==chan.hashname &&
-						undelivered[i].data==packet.js.data
+						undelivered[i].data.sent==packet.js.data.sent
 					) {
 						undelivered.splice(i, 1);
 
-                        for(var k = undelivered.length - 1; k >= 0; k--) {
+                        for(var k = 0; k< undelivered.length; k++) {
 							if(undelivered[k].destination==chan.hashname) {
 								th_SendData2Dest(chan.hashname,{cmd:undelivered[k].cmd, data:undelivered[k].data});
+							};
+						};
+
+                        for(var k = undelivered.length - 1; k >= 0; k--) {
+							if(undelivered[k].destination==chan.hashname) {
 								undelivered.splice(k, 1);
 							};
 						};
@@ -1587,6 +1592,9 @@ function checkMem(){
 	else if(alarmtout>0)alarmtout--;
 	free=null;
 	rss=null;
+    if(paused && undelivered.length == 0){
+        exit();
+    }
 	setTimeout(function(){checkMem();},10000);
 	//return;
 };
