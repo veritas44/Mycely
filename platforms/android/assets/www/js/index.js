@@ -1,4 +1,4 @@
-var currentver = "0.045";
+var currentver = "0.046";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {

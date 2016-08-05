@@ -366,7 +366,7 @@ public class MyService extends BackgroundService {
 	{
 		Log.d("MyService", "// Shedule service now");
 		Calendar wakeUpTime = Calendar.getInstance();
-		wakeUpTime.add(Calendar.SECOND, 2);
+		wakeUpTime.add(Calendar.SECOND, 30);
 		WakeUpReceiver.setAlarm(this, WakeUpReceiver.WAKE_TYPE_UPLOAD, wakeUpTime);
 	}
 

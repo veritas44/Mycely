@@ -39,7 +39,7 @@ public class WakeUpReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // Start appropriate service type
-        Log.d(TAG, " // Start appropriate service type 76 ");
+        Log.d(TAG, " // Start appropriate service type 42 ");
         WakeUpReceiver.scheduleNextPing(context);
         int wakeType = intent.getExtras().getInt("wakeType");
         switch (wakeType) {
@@ -61,7 +61,7 @@ public class WakeUpReceiver extends WakefulBroadcastReceiver {
     //@SuppressLint("NewApi")
     public static void setAlarm(Context context, int wakeType, Calendar startTime) {
         // Set alarm to start at given time
-        Log.d(TAG, " Set alarm to start at given time 95");
+        Log.d(TAG, " Set alarm to start at given time 64");
         alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, WakeUpReceiver.class);
         intent.putExtra("wakeType", wakeType);
@@ -84,7 +84,7 @@ public class WakeUpReceiver extends WakefulBroadcastReceiver {
 	{
 		Log.d("MyService", "// Shedule service now");
 		Calendar wakeUpTime = Calendar.getInstance();
-		wakeUpTime.add(Calendar.SECOND, 2);
+		wakeUpTime.add(Calendar.SECOND, 30);
 		WakeUpReceiver.setAlarm(context, WakeUpReceiver.WAKE_TYPE_UPLOAD, wakeUpTime);
 	}
 
