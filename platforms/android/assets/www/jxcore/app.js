@@ -835,7 +835,7 @@ function ProcessCmdFromUI(cmd,data){
 								break;
         case 'Pause':
                                 paused = true;
-                                killtimeout = setTimeout(function(){killByTimeout();},60000);
+                                killtimeout = setTimeout(function(){killByTimeout();},300000);
                                 break;
         case 'Resume':
                                 paused = false;
@@ -1494,6 +1494,7 @@ function packetHandler(err, packet, chan, callback){
     if(paused){
         if(killtimeout){
             clearTimeout(killtimeout);
+            killtimeout = setTimeout(function(){killByTimeout();},300000);
         }
         /*
         Mobile.notify(function(err, location) {
@@ -1623,7 +1624,7 @@ function killByTimeout(){
         exit();
     }
     else if(paused){
-        killtimeout = setTimeout(function(){killByTimeout();},60000);
+        killtimeout = setTimeout(function(){killByTimeout();},300000);
     }
 };
 

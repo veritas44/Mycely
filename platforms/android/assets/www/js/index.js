@@ -1,4 +1,4 @@
-var currentver = "0.044";
+var currentver = "0.045";
 //console.log=function(){;};
 //////////////////////////////////////// Array.findIndex
 if (!Array.prototype.findIndex) {
@@ -238,7 +238,7 @@ var app = {
 		document.addEventListener("resume", function() {
 			inBG=false;
 
-            myService.enableTimer(60000, function(r){}, function(e){handleError(e)});
+            myService.enableTimer(180000, function(r){}, function(e){handleError(e)});
 
 			if(Main.chat.dest){
 				for(var i in Main.peers)
@@ -310,7 +310,7 @@ var app = {
 		dontForceForeground=true;
 		setTimeout(function(){dontForceForeground=false;},5000);
 
-        myService.enableTimer(60000, function(r){}, function(e){handleError(e)});
+        myService.enableTimer(180000, function(r){}, function(e){handleError(e)});
         Send2Backend('Pause', {});
 		//updateTotalNewMsgsCnt(false);
     },
@@ -318,7 +318,7 @@ var app = {
         console.log('###Received Event: <backkey>');
 		navigator.home.home(function(){
 		    console.info("Successfully launched home intent");
-            myService.enableTimer(60000, function(r){}, function(e){handleError(e)});
+            myService.enableTimer(180000, function(r){}, function(e){handleError(e)});
 		}, function(){
 		    console.error("Error launching home intent");
 		});
@@ -380,7 +380,7 @@ function registerForPush(pushid){
     if(Main.profile.destination){
         console.log("registerForPush");
         registeredForPush = true;
-        myService.enableTimer(60000, function(r){registerForUpdates(r)}, function(e){handleError(e)});
+        myService.enableTimer(180000, function(r){registerForUpdates(r)}, function(e){handleError(e)});
         Send2Backend("registerForPush", {pushid: pushid});
     }
 };

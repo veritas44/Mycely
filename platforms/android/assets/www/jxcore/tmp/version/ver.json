@@ -1,4 +1,4 @@
 {
-  "app":"0.044",
-  "changes": "fix app's autokill alg"
+  "app":"0.045",
+  "changes": "3min push 5min autokill in bg"
 }
